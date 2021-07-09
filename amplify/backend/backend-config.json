@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "studybuddy2ac15041": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
