@@ -1,15 +1,10 @@
-
 import Amplify, { API, graphqlOperation, Auth } from 'aws-amplify'
 import awsExports from "./aws-exports";
 import React, { useState, useEffect } from 'react';
 
-
-
-
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
 import * as subscriptions from './graphql/subscriptions';
-
 
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,20 +15,15 @@ import { spacing } from '@material-ui/system';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Box from '@material-ui/core/Box';
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box'; import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { findRenderedDOMComponentWithClass } from 'react-dom/cjs/react-dom-test-utils.production.min';
 Amplify.configure(awsExports);
 
-
-
 class Profile extends React.Component {
     constructor() {
         super();
-
         this.state = {
             id: '',
             firstName: '',
@@ -41,6 +31,20 @@ class Profile extends React.Component {
             lastName: '',
             degree: ''
         }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange({ target: { id, value } }) {
+        this.setState({
+            ...this.setState, [id]: value
+        })
+    }
+
+    handleSubmit() {
+        console.log(this.state)
+        API.graphql({ query: mutations.updateStudent, variables: { input: this.state } });
+        alert("SUBMIT")
     }
 
     componentDidMount() {
@@ -50,90 +54,121 @@ class Profile extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } }).then((data) => {
                 // console.log(data)
                 if (data.data.studentByEmail.items.length == 0) {
-                
-                    API.graphql({ query: mutations.createStudent, variables: { input: {email:user.attributes.email}} });
-                     console.log("New student created")
+
+                     API.graphql({ query: mutations.createStudent, variables: { input: { email: user.attributes.email } } })
+                     . then((newStudentData) => {
+                          console.log(newStudentData.data.createStudent.id)
+                         this.setState({
+                            ...this.setState, id: newStudentData.data.createStudent.id,
+                        })
+                     });
+                    
+                    // console.log(user.attributes.email )
+
+                    // API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } }).then((newStudent) => {
+                    //     console.log(newStudent)
+                    // })
 
                 }
-                this.setState({
-                    ...this.setState, firstName: user.attributes.firstName,
-                    lastName: user.attributes.lastName,
-                    degree: user.attributes.degree
-                })
-                console.log(this.state)
+                else {
+                     console.log(data.data.studentByEmail.items)
+                    if (data.data.studentByEmail.items[0].firstName!=null){
+                        this.setState({
+                            ...this.setState, firstName: data.data.studentByEmail.items[0].firstName,
+                            
+                        })
+                    }
+                    if (data.data.studentByEmail.items[0].lastName!=null){
+                        this.setState({
+                            ...this.setState,
+                            lastName: data.data.studentByEmail.items[0].lastName,
+                           
+                        })
+                    }
+
+                    if (data.data.studentByEmail.items[0].degree!=null){
+                        this.setState({
+                            ...this.setState, degree: data.data.studentByEmail.items[0].degree
+                        })
+                    }
+                    if (data.data.studentByEmail.items[0].id!=null){
+                        this.setState({
+                            ...this.setState, id: data.data.studentByEmail.items[0].id
+                        })
+                    }
+                    
+                }
+                
             });
 
+            // if (this.state.id==''){
+            //     console.log(user.attributes.email)
+            //     API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } }).then((data) => {
+                    // this.setState({
+                    //     ...this.setState, id: data.data.studentByEmail.items[0].id,
+                    // })
+            //     })
+            // }
         })
-
-
     }
 
     render(props) {
-
-
         return (
-            // <div>
-            //  <h1>{this.state.email}</h1>
-
-            // <form>
-            //     <label>
-            //         Email:
-            //         <input type="text" value={this.state.email} name="name" />
-            //     </label>
-            //      <label> 
-            //         Name:
-            //         <input type="text" value={this.state.firstName} name="name" />
-            //     </label> 
-            //     <input value={this.state.email} type="submit" value="Submit" /> 
-            // </form>
-            // </div>
-
-
-
             <Container component="main" maxWidth="xs">
                 {/* <CssBaseline /> */}
 
                 <Typography component="h1" variant="h5" align="center">
                     Profile
                 </Typography>
-                <form>
+                <form >
                     <Box pb={3} width={500} pt={3}>
 
                         <TextField
                             autoComplete="fname"
                             name="firstName"
-
-                            variant="outlined"
+                            value={this.state.firstName}
+                            // variant="outlined"
+                            onChange={this.handleChange}
+                            // placeholder="First Name"
                             fullWidth
                             id="firstName"
                             label="First Name"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             autoFocus
                         />
-
                     </Box>
-
                     <Box pb={3} width={500}>
                         <TextField
-                            variant="outlined"
+                            // variant="outlined"
                             fullWidth
                             id="lastName"
+                            onChange={this.handleChange}
+                            value={this.state.lastName}
+                            // placeholder="Last Name"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             label="Last Name"
                             name="lastName"
                             autoComplete="lname"
                         />
-
                     </Box>
-                    <Box pb={3}>
-
+                    <Box pb={3} width={500}>
                         <TextField
-                            variant="outlined"
+                            // variant="outlined"
                             fullWidth
                             id="degree"
+                            value={this.state.degree}
+                            // placeholder="Degree"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             label="Degree"
+                            onChange={this.handleChange}
                             name="degree"
-
                         />
-
                     </Box>
                     <Box pb={3} width={500}>
                         <TextareaAutosize
@@ -142,21 +177,20 @@ class Profile extends React.Component {
                             maxRows={5}
                             style={{ width: "100%" }}
                             minRows={5}
+
                             label="Bio"
                             id="bio"
                             name="bio"
                         />
                     </Box>
                     <Button
-                        type="submit"
-
+                        onClick={this.handleSubmit}
                         variant="contained"
                         color="primary"
                     >
                         Update Profile
                     </Button>
                 </form>
-
             </Container>
         )
     }

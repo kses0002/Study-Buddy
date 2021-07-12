@@ -30,7 +30,7 @@ export const NavigationBar = () => (
         <Nav className="ml-auto">
           <Nav.Item><Nav.Link href="/ViewStudents">View Students</Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/ViewProfile">Profile</Nav.Link></Nav.Item>
-          {/* <Nav.Item><AmplifySignOut/></Nav.Item> */}
+          <Nav.Item><AmplifySignOut/></Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

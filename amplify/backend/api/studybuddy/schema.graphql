@@ -1,6 +1,7 @@
 
 type Student @model 
  @key(name: "studentEmail", fields: ["email"], queryField: "studentByEmail") {
+  id: String
   email: String!
   firstName: String
   lastName: String
