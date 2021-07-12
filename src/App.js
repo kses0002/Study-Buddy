@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 
-// import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NavigationBar } from './NavigationBar';
 
@@ -21,6 +21,7 @@ function App() {
           {/* <Route component={Home} /> */}
         </Switch>
       </Router>
+      
     </React.Fragment>
 
   );

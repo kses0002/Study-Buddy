@@ -1,20 +1,26 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-studybuddy-dev-232321-authRole",
-      "UnauthRoleArn": "arn:aws:iam::986634629603:role/amplify-studybuddy-dev-232321-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::986634629603:role/amplify-studybuddy-dev-232321-authRole",
-      "Region": "ap-southeast-2",
-      "DeploymentBucketName": "amplify-studybuddy-dev-232321-deployment",
-      "UnauthRoleName": "amplify-studybuddy-dev-232321-unauthRole",
-      "StackName": "amplify-studybuddy-dev-232321",
-      "StackId": "arn:aws:cloudformation:ap-southeast-2:986634629603:stack/amplify-studybuddy-dev-232321/24a72f00-e0b9-11eb-a393-0261ca7c64a4",
-      "AmplifyAppId": "d2kr14i187qv8y"
-    },
-    "categories": {
-      "auth": {
-        "studybuddy2ac15041": {}
-      }
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-studybuddy-dev-232321-authRole",
+            "UnauthRoleArn": "arn:aws:iam::986634629603:role/amplify-studybuddy-dev-232321-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::986634629603:role/amplify-studybuddy-dev-232321-authRole",
+            "Region": "ap-southeast-2",
+            "DeploymentBucketName": "amplify-studybuddy-dev-232321-deployment",
+            "UnauthRoleName": "amplify-studybuddy-dev-232321-unauthRole",
+            "StackName": "amplify-studybuddy-dev-232321",
+            "StackId": "arn:aws:cloudformation:ap-southeast-2:986634629603:stack/amplify-studybuddy-dev-232321/24a72f00-e0b9-11eb-a393-0261ca7c64a4",
+            "AmplifyAppId": "d2kr14i187qv8y"
+        },
+        "categories": {
+            "auth": {
+                "studybuddy2ac15041": {}
+            },
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d2kr14i187qv8y",
+                    "type": "manual"
+                }
+            }
+        }
     }
-  }
 }
