@@ -12,6 +12,7 @@ export const createStudent = /* GraphQL */ `
       firstName
       lastName
       degree
+      units
       createdAt
       updatedAt
     }
@@ -28,6 +29,7 @@ export const updateStudent = /* GraphQL */ `
       firstName
       lastName
       degree
+      units
       createdAt
       updatedAt
     }
@@ -44,6 +46,7 @@ export const deleteStudent = /* GraphQL */ `
       firstName
       lastName
       degree
+      units
       createdAt
       updatedAt
     }

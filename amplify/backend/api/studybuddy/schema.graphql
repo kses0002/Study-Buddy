@@ -6,4 +6,5 @@ type Student @model
   firstName: String
   lastName: String
   degree: String
+  units:[String]
 }

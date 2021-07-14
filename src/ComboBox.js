@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,12 +15,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function handleOptions(value) {
-    console.log(value)
-};
 
-export default function Tags() {
+
+export default function ComboBox({data, onChildClick}) {
   const classes = useStyles();
+  const unitsSelected=[]
+
+  // useEffect(() => {
+  //   if(data!=null){
+  //     for(let i=0;i<data.length;i++){
+  //       unitsSelected.push({
+  //         unit: data[i]
+  //       })
+  //     }
+  //   }
+  // })
+
+  if(data!=null){
+    for(let i=0;i<data.length;i++){
+      unitsSelected.push({
+        unit: data[i]
+      })
+    }
+  }
+  
+    // console.log(unitsSelected)
+  // console.log(monashUnitsA)
 
   return (
     <div className={classes.root}>
@@ -27,10 +49,10 @@ export default function Tags() {
         id="tags-standard"
         options={monashUnits}
         getOptionLabel={(option) => option.unit}
-        // defaultValue={[monashUnits[2]]}
-        defaultValue={[]}
-        onChange={(event, value) => handleOptions(value)}
-        renderInput={(params) => (
+        {...console.log(unitsSelected)}
+        defaultValue={unitsSelected}
+        onChange={(event, value) => {onChildClick(value)}}
+        renderInput={(params) => ( 
           <TextField
             {...params}
             variant="standard"
@@ -43,11 +65,15 @@ export default function Tags() {
   );
 }
 
-
 const monashUnits = [
   { unit: "FIT2012: Introduction to python" },
   { unit: "FIT4124: Introduction to Java" },
   { unit: "FIT5232: Introduction to C" },
   { unit: "FIT6543: Introduction to AWS" },
   { unit: "FIT4123: Introduction to React" },
+]
+
+const monashUnitsA = [
+  { unit: "FIT6543: Introduction to AWS" },
+  { unit: "FIT4123: Introduction to React" }
 ]
