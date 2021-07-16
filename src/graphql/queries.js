@@ -10,6 +10,7 @@ export const getStudent = /* GraphQL */ `
       lastName
       degree
       units
+      studyMode
       createdAt
       updatedAt
     }
@@ -29,6 +30,7 @@ export const listStudents = /* GraphQL */ `
         lastName
         degree
         units
+        studyMode
         createdAt
         updatedAt
       }
@@ -58,6 +60,7 @@ export const studentByEmail = /* GraphQL */ `
         lastName
         degree
         units
+        studyMode
         createdAt
         updatedAt
       }

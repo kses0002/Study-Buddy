@@ -21,15 +21,6 @@ export default function ComboBox({data, onChildClick}) {
   const classes = useStyles();
   const unitsSelected=[]
 
-  // useEffect(() => {
-  //   if(data!=null){
-  //     for(let i=0;i<data.length;i++){
-  //       unitsSelected.push({
-  //         unit: data[i]
-  //       })
-  //     }
-  //   }
-  // })
 
   if(data!=null){
     for(let i=0;i<data.length;i++){
@@ -39,8 +30,6 @@ export default function ComboBox({data, onChildClick}) {
     }
   }
   
-    // console.log(unitsSelected)
-  // console.log(monashUnitsA)
 
   return (
     <div className={classes.root}>
@@ -49,7 +38,7 @@ export default function ComboBox({data, onChildClick}) {
         id="tags-standard"
         options={monashUnits}
         getOptionLabel={(option) => option.unit}
-        {...console.log(unitsSelected)}
+        // {...console.log(unitsSelected)}
         defaultValue={unitsSelected}
         onChange={(event, value) => {onChildClick(value)}}
         renderInput={(params) => ( 
