@@ -8,7 +8,7 @@ import { NavigationBar } from './NavigationBar';
 
 
 import  Profile  from './Profile.js';
-import { ViewStudents } from './ViewStudents.js';
+import  ViewStudents  from './ViewStudents.js';
 
 function App() {
   return (
