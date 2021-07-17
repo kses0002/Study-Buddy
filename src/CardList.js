@@ -6,8 +6,24 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-export default function CardList ({data})  {
-    
+export default function CardList({ data }) {
+
+
+    // console.log(data)
+
+    // const newData=[]
+    // for (var key in data) {
+    //     if (data.hasOwnProperty(key)) {
+    //         console.log(key);
+    //         newData.push(data[key])
+    //     }
+    // }
+
+    // console.log(newData)
+    // data=newData
+
+    console.log(data)
+
     const cardsArray = data.map(data => (
         <div>
       <Card>
@@ -17,23 +33,74 @@ export default function CardList ({data})  {
 
            <CardContent>
         <Typography color="textSecondary" gutterBottom>
-          {data.name}
+          {data.email}
         </Typography>
         <Typography variant="h5" component="h2">
-          {data.Degree}
+          {data.units}
         </Typography>  
       </CardContent>
       <CardActions>
         <Button size="small">Learn More</Button>
       </CardActions>
       </Card>
-         
+
          </div>
     ));
-  
+        console.log("AAA")
     return (
-      <div>
-        {cardsArray}
-      </div>
+        <div>
+            {cardsArray}
+        </div>
     );
-  };
+};
+
+// export default class CardList extends React.Component {
+//     constructor(props) {
+//         super(props);
+
+//          this.studentData = []
+//         for (var key in this.props.data) {
+//             if (this.props.data.hasOwnProperty(key)) {
+//                 // console.log(key);
+//                 this.studentData.push(this.props.data[key])
+//             }
+//         }
+//     }
+
+
+//     render(props) {
+
+//         console.log(this.props)
+//         // const studentData = []
+//         // for (var key in this.props.data) {
+//         //     if (this.props.data.hasOwnProperty(key)) {
+//         //         // console.log(key);
+//         //         studentData.push(this.props.data[key])
+//         //     }
+//         // }
+//         // console.log(studentData)
+
+//         return (
+//             <div>
+//                 <Card>
+//                     {/* name={data.line1}
+//                         email={data.line2}
+//                         key={data.id} */}
+
+//                     <CardContent>
+//                         <Typography color="textSecondary" gutterBottom>
+//                             {this.studentData.email}
+//                         </Typography>
+//                         <Typography variant="h5" component="h2">
+//                             {this.studentData.units}
+//                         </Typography>
+//                     </CardContent>
+//                     <CardActions>
+//                         <Button size="small">Learn More</Button>
+//                     </CardActions>
+//                 </Card>
+
+//             </div>
+//         )
+//     }
+// }
