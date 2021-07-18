@@ -1,90 +1,26 @@
-import Amplify, { API, Auth } from 'aws-amplify'
-import awsExports from "./aws-exports";
-import React, { useState } from 'react';
+import { API, Auth } from 'aws-amplify'
+import React from 'react';
 import * as queries from './graphql/queries';
-import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import CardList from './CardList.js'
-
-// export default function ViewStudents() {
-//     const similarStudents = {}
-//     const studentData = []
-
-//     async function getStudentData() {
-//         const user = await Auth.currentAuthenticatedUser()
-//         const currentUserData = await API.graphql({
-//             query: queries.studentByEmail,
-//             variables: { email: user.attributes.email }
-//         })
-
-//         const currentStudent = currentUserData.data.studentByEmail.items[0]
-
-//         let allStudents = await API.graphql({ query: queries.listStudents })
-//         allStudents = allStudents.data.listStudents.items
-
-
-
-//         for (let i = 0; i < allStudents.length; i++) {
-//             for (let j = 0; j < currentStudent.units.length; j++) {
-//                 if (allStudents[i].units != null && allStudents[i].email != currentStudent.email
-//                     && allStudents[i].units.includes(currentStudent.units[j])) {
-//                     if (allStudents[i].email in similarStudents) {
-//                         similarStudents[allStudents[i].email].units.push(currentStudent.units[j])
-//                     }
-//                     else {
-//                         const newObject = ({ ...allStudents[i], units: [currentStudent.units[j]] })
-
-//                         similarStudents[allStudents[i].email] = newObject
-//                     }
-//                 }
-
-
-
-//             }
-//         }
-
-
-//         for (var key in similarStudents) {
-//             if (similarStudents.hasOwnProperty(key)) {
-//                 // console.log(key);
-//                 studentData.push(similarStudents[key])
-//             }
-//         }
-
-//         console.log(studentData)
-//     }
-
-//     getStudentData()
-
-//     if (studentData.length != 0) {
-//         return (
-//             <div>
-//                 {/* {getStudentData()} */}
-//                 <h1>{studentData}</h1></div>
-//         )
-//     }
-//     else{
-//         return(<div></div>)
-//     }
-
-// }
-
 
 
 export default class ViewStudents extends React.Component {
-
     constructor() {
         super();
         this.similarStudents = {}
         this.state = {
-            list: []
+            list: [],
+            searchTerm: "",
+            searchlist:[]
         }
-    }
+        this.handleSearchQuery = this.handleSearchQuery.bind(this);
+        this.updateState = this.updateState.bind(this);
 
+    }
 
     componentWillMount() {
         Auth.currentAuthenticatedUser().then((user) => {
@@ -92,11 +28,9 @@ export default class ViewStudents extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
-                    // console.log(currentStudent)
 
                     API.graphql({ query: queries.listStudents }).then((studentData) => {
                         const allStudents = studentData.data.listStudents.items
-                        // console.log(allStudents)
 
                         for (let i = 0; i < allStudents.length; i++) {
                             for (let j = 0; j < currentStudent.units.length; j++) {
@@ -114,110 +48,68 @@ export default class ViewStudents extends React.Component {
                                 }
                             }
                         }
-                        console.log(this.similarStudents)
 
                         for (var key in this.similarStudents) {
                             if (this.similarStudents.hasOwnProperty(key)) {
-                                // console.log(key);
-                                // this.state.push(this.similarStudents[key])
-
                                 this.setState(state => {
-                                    console.log(state)
                                     const list = [...state.list, this.similarStudents[key]];
-
                                     return {
-                                        list
+                                        list,
+                                        //searchTerm
                                     }
-
-
                                 })
                             }
+                            
                         }
-
-
-
-
-
-                        console.log(this.state.list)
-
-
+                        this.setState({...this.state, searchlist: this.state.list})
                     });
+                    
                 })
-        })
+        })    
+    }
+
+    updateState() {
+        this.setState({...this.state, searchlist:[]})
+        this.state.list.filter(student => student.degree.includes(this.state.searchTerm) || 
+        student.firstName.includes(this.state.searchTerm) || 
+        student.units.find(value => value.includes(this.state.searchTerm)) ).
+            map(filteredStudents => (
+                console.log("FILTER"),
+                console.log(filteredStudents),
+                this.setState
+                (state => {
+                    const searchlist = [...state.searchlist, filteredStudents];
+                    return {
+                        searchlist,
+                    }
+                }
+            )))
+    }
+
+    handleSearchQuery(event) {
+        this.setState(
+            { ...this.state, searchTerm: event.target.value }, () => this.updateState())
     }
 
     render(props) {
-        const data = [
-            {
-                name: "Keshav",
-                Degree: "Eng",
-                Bio: "I am indian",
-                StudyMode: "Virtual",
-                units: "FIT#$@, FIT$@@"
-            },
-
-            {
-                name: "Keshav",
-                Degree: "Eng",
-                Bio: "I am indian",
-                StudyMode: "Virtual",
-                units: "FIT#$@, FIT$@@"
-            },
-
-            {
-                name: "Keshav",
-                Degree: "Eng",
-                Bio: "I am indian",
-                StudyMode: "Virtual",
-                units: "FIT#$@, FIT$@@"
-            },
-        ]
-
-        // return (
-        //     <div>
-        //         <CardList data={this.similarStudents} />
-        //     </div>
-        // );
-
-        // const studentData = []
-        // console.log(this.similarStudents)
-        // for (var key in this.similarStudents) {
-        //     if (this.props.data.hasOwnProperty(key)) {
-        //         // console.log(key);
-        //         studentData.push(this.similarStudents[key])
-        //     }
-        // }
-
-        //         return (
-        //     <div>
-        //         <CardList data={this.s} />
-        //     </div>
-        // );
-
-
+        
         return (
-
             <div>
-                {/* <div>
-                  {console.log(this.state)}
-                 <CardList data={this.state} />
-            </div> */}
-                {/* <Card>
-
-                    <CardContent>
-                        <Typography color="textSecondary" gutterBottom>
-                            {this.state.list.map((data)=>data.email)}
-                        </Typography>
-                        <Typography variant="h5" component="h2">
-                            {this.state.units}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button size="small">Learn More</Button>
-                    </CardActions>
-                </Card> */}
-                {/* <Card.Group> */}
-                    {this.state.list.map((card) => (
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={this.state.searchTerm}
+                        onChange={this.handleSearchQuery}
+                    />
+                </div>
+                <div>
+                    {console.log("SEARCH")}
+                    {console.log(this.state.searchlist)}
+                    {console.log("LIST")}
+                    {console.log(this.state.list)}
+                    {this.state.searchlist.map(card => (
+                        // <li>{card.email}</li>
                         <Card>
                             <CardContent>
                                 <Typography color="textSecondary" gutterBottom>
@@ -236,13 +128,9 @@ export default class ViewStudents extends React.Component {
                                 <Button size="small">Learn More</Button>
                             </CardActions>
                         </Card>
-
                     ))}
-                {/* </Card.Group> */}
+                </div>
             </div>
-
         )
     }
-
-
 }
