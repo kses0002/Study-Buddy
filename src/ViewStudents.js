@@ -6,7 +6,13 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
+import Grid from '@material-ui/core/Grid';
+import Avatar from '@material-ui/core/Avatar';
+import Collapse from '@material-ui/core/Collapse';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import CardHeader from '@material-ui/core/CardHeader';
+import './ViewStudents.css';
 
 export default class ViewStudents extends React.Component {
     constructor() {
@@ -15,7 +21,7 @@ export default class ViewStudents extends React.Component {
         this.state = {
             list: [],
             searchTerm: "",
-            searchlist:[]
+            searchlist: []
         }
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
@@ -59,31 +65,32 @@ export default class ViewStudents extends React.Component {
                                     }
                                 })
                             }
-                            
+
                         }
-                        this.setState({...this.state, searchlist: this.state.list})
+                        this.setState({ ...this.state, searchlist: this.state.list })
                     });
-                    
+
                 })
-        })    
+        })
     }
 
     updateState() {
-        this.setState({...this.state, searchlist:[]})
-        this.state.list.filter(student => student.degree.includes(this.state.searchTerm) || 
-        student.firstName.includes(this.state.searchTerm) || 
-        student.units.find(value => value.includes(this.state.searchTerm)) ).
+        this.setState({ ...this.state, searchlist: [] })
+        this.state.list.filter(student => student.degree.includes(this.state.searchTerm) ||
+            student.firstName.includes(this.state.searchTerm) ||
+            student.units.find(value => value.includes(this.state.searchTerm)) ||
+            student.studyMode.find(value => value.includes(this.state.searchTerm))).
             map(filteredStudents => (
                 console.log("FILTER"),
                 console.log(filteredStudents),
                 this.setState
-                (state => {
-                    const searchlist = [...state.searchlist, filteredStudents];
-                    return {
-                        searchlist,
+                    (state => {
+                        const searchlist = [...state.searchlist, filteredStudents];
+                        return {
+                            searchlist,
+                        }
                     }
-                }
-            )))
+                    )))
     }
 
     handleSearchQuery(event) {
@@ -92,9 +99,9 @@ export default class ViewStudents extends React.Component {
     }
 
     render(props) {
-        
+
         return (
-            <div>
+            <div className="root">
                 <div>
                     <input
                         type="text"
@@ -103,34 +110,56 @@ export default class ViewStudents extends React.Component {
                         onChange={this.handleSearchQuery}
                     />
                 </div>
-                <div>
-                    {console.log("SEARCH")}
-                    {console.log(this.state.searchlist)}
-                    {console.log("LIST")}
-                    {console.log(this.state.list)}
+
+                <br></br>
+                <br></br>
+                {/* <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> */}
+                <Grid container spacing={4} justifyContent="center">
                     {this.state.searchlist.map(card => (
                         // <li>{card.email}</li>
-                        <Card>
-                            <CardContent>
-                                <Typography color="textSecondary" gutterBottom>
-                                    {card.firstName}
+                        // <Grid container spacing={5}>
+
+                        <Grid item xs={12} sm={6} md={3} >
+                            <Card className="card">
+                                <CardHeader
+                                    title={card.firstName}
+                                    subheader={card.degree}
+                                    avatar={
+                                        <Avatar aria-label="recipe" >
+                                            {card.firstName[0]}
+                                        </Avatar>
+                                    }
+                                //   titleTypographyProps={{fontSize:"20px"}}
+                                />
+                                <CardContent>
+                                    {/* <Typography display="inline" gutterbottom="true" variant="body2"> */}
+                                    Units: {card.units.map((item) =>
+                                        <Typography  gutterbottom="true" variant="body2">{item}</Typography>)}
                                     <br></br>
-                                    {card.degree}
-                                    <br></br>
-                                    {card.email}
-                                    <br></br>
-                                    {card.units}
-                                    <br></br>
-                                    {card.studyMode}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small">Learn More</Button>
-                            </CardActions>
-                        </Card>
-                    ))}
-                </div>
-            </div>
+                                    Study Mode: {card.studyMode.map((item) =>
+                                        <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
+                                </CardContent>
+                                <CardActions>
+                                    <Button size="small">Add</Button>
+                                    <Button size="small">Dismiss</Button>
+                                </CardActions>
+                                {/* <Collapse in={true} timeout="auto" unmountOnExit>
+                                    <CardContent>
+                                        <Typography paragraph>Method:</Typography>
+                                        <Typography paragraph>
+                                            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
+                                            minutes.
+                                        </Typography>
+                                    </CardContent>
+                                </Collapse> */}
+                            </Card>
+                        </Grid>
+                    ))
+                    }
+                </Grid>
+            </div >
+
+
         )
     }
 }
