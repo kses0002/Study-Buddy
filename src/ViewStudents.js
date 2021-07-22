@@ -9,10 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Collapse from '@material-ui/core/Collapse';
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 import './ViewStudents.css';
+import IconButton from '@material-ui/core/IconButton';
 
 export default class ViewStudents extends React.Component {
     constructor() {
@@ -21,12 +22,24 @@ export default class ViewStudents extends React.Component {
         this.state = {
             list: [],
             searchTerm: "",
-            searchlist: []
+            searchlist: [],
+            expandEmail:""
         }
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
+        this.handleExpandClick = this.handleExpandClick.bind(this);
 
     }
+
+    handleExpandClick  (cardEmail)  {
+        console.log()
+        if (cardEmail == this.state.expandEmail){
+            this.setState({...this.state, expandEmail: ''});
+        }
+        else{
+        this.setState({...this.state, expandEmail: cardEmail});
+        }
+      };
 
     componentWillMount() {
         Auth.currentAuthenticatedUser().then((user) => {
@@ -37,6 +50,7 @@ export default class ViewStudents extends React.Component {
 
                     API.graphql({ query: queries.listStudents }).then((studentData) => {
                         const allStudents = studentData.data.listStudents.items
+                        console.log(allStudents)
 
                         for (let i = 0; i < allStudents.length; i++) {
                             for (let j = 0; j < currentStudent.units.length; j++) {
@@ -113,14 +127,12 @@ export default class ViewStudents extends React.Component {
 
                 <br></br>
                 <br></br>
-                {/* <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> */}
                 <Grid container spacing={4} justifyContent="center">
                     {this.state.searchlist.map(card => (
-                        // <li>{card.email}</li>
-                        // <Grid container spacing={5}>
+           
 
-                        <Grid item xs={12} sm={6} md={3} >
-                            <Card className="card">
+                        <Grid item xs={12} sm={6} md={3}  >
+                            <Card className="card" >
                                 <CardHeader
                                     title={card.firstName}
                                     subheader={card.degree}
@@ -129,12 +141,10 @@ export default class ViewStudents extends React.Component {
                                             {card.firstName[0]}
                                         </Avatar>
                                     }
-                                //   titleTypographyProps={{fontSize:"20px"}}
                                 />
                                 <CardContent>
-                                    {/* <Typography display="inline" gutterbottom="true" variant="body2"> */}
                                     Units: {card.units.map((item) =>
-                                        <Typography  gutterbottom="true" variant="body2">{item}</Typography>)}
+                                        <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
                                     <br></br>
                                     Study Mode: {card.studyMode.map((item) =>
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
@@ -142,16 +152,22 @@ export default class ViewStudents extends React.Component {
                                 <CardActions>
                                     <Button size="small">Add</Button>
                                     <Button size="small">Dismiss</Button>
+                                    <IconButton
+                                        onClick={() => this.handleExpandClick(card.email)}
+                                        aria-expanded={this.state.expanded}
+                                        aria-label="show more"
+                                    >
+                                        <ExpandMoreIcon />
+                                    </IconButton>
                                 </CardActions>
-                                {/* <Collapse in={true} timeout="auto" unmountOnExit>
+                                <Collapse in={card.email==this.state.expandEmail} timeout="auto"  unmountOnExit>
                                     <CardContent>
-                                        <Typography paragraph>Method:</Typography>
+                                        <Typography paragraph>About {card.firstName}:</Typography>
                                         <Typography paragraph>
-                                            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-                                            minutes.
+                                            {card.aboutMe}
                                         </Typography>
                                     </CardContent>
-                                </Collapse> */}
+                                </Collapse>
                             </Card>
                         </Grid>
                     ))

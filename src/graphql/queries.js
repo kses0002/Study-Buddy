@@ -8,6 +8,7 @@ export const getStudent = /* GraphQL */ `
       email
       firstName
       lastName
+      aboutMe
       degree
       units
       studyMode
@@ -28,6 +29,7 @@ export const listStudents = /* GraphQL */ `
         email
         firstName
         lastName
+        aboutMe
         degree
         units
         studyMode
@@ -58,6 +60,7 @@ export const studentByEmail = /* GraphQL */ `
         email
         firstName
         lastName
+        aboutMe
         degree
         units
         studyMode

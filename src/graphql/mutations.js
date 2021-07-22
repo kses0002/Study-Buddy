@@ -11,6 +11,7 @@ export const createStudent = /* GraphQL */ `
       email
       firstName
       lastName
+      aboutMe
       degree
       units
       studyMode
@@ -29,6 +30,7 @@ export const updateStudent = /* GraphQL */ `
       email
       firstName
       lastName
+      aboutMe
       degree
       units
       studyMode
@@ -47,6 +49,7 @@ export const deleteStudent = /* GraphQL */ `
       email
       firstName
       lastName
+      aboutMe
       degree
       units
       studyMode

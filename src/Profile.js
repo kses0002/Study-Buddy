@@ -11,6 +11,7 @@ import Box from '@material-ui/core/Box'; import Typography from '@material-ui/co
 import Container from '@material-ui/core/Container';
 import ComboBox from './ComboBox';
 import CheckBox from './CheckBox'
+import Grid from '@material-ui/core/Grid';
 Amplify.configure(awsExports);
 
 class Profile extends React.Component {
@@ -22,9 +23,10 @@ class Profile extends React.Component {
             firstName: '',
             email: '',
             lastName: '',
+            aboutMe: '',
             degree: '',
             units: null,
-            studyMode:null
+            studyMode: null
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,9 +52,9 @@ class Profile extends React.Component {
         )
     }
 
-    handleValueFromCheckBox(event, isChecked){
-        if (this.state.studyMode==null){
-            this.state.studyMode=[]
+    handleValueFromCheckBox(event, isChecked) {
+        if (this.state.studyMode == null) {
+            this.state.studyMode = []
         }
         if (isChecked) {
             this.state.studyMode.push(event.target.value)
@@ -108,6 +110,13 @@ class Profile extends React.Component {
                             ...this.setState, firstName: data.data.studentByEmail.items[0].firstName,
                         })
                     }
+
+                    if (data.data.studentByEmail.items[0].aboutMe != null) {
+                        this.setState({
+                            ...this.setState, aboutMe: data.data.studentByEmail.items[0].aboutMe,
+                        })
+                    }
+
                     if (data.data.studentByEmail.items[0].lastName != null) {
                         this.setState({
                             ...this.setState,
@@ -135,7 +144,6 @@ class Profile extends React.Component {
                             ...this.setState, studyMode: data.data.studentByEmail.items[0].studyMode,
                         })
                     }
-                    // console.log(this.state)
                 }
             });
         })
@@ -153,121 +161,131 @@ class Profile extends React.Component {
         ]
 
         return (
-            <Container component="main" maxWidth="xs">
-                {/* <CssBaseline /> */}
+            <Container component="main" >
+                <br></br>
+                <br></br>
+                <br></br>
+                <form>
+                    <Grid container spacing={3} alignItems="center" justifyContent="center"  >
+                        <Grid item xs={4} >
+                            Name or Nickname:
+                        </Grid>
+                        <Grid item xs={5}  >
+                            <TextField
+                                autoComplete="fname"
+                                name="firstName"
+                                value={this.state.firstName}
+                                variant="filled"
+                                onChange={this.handleChange}
+                                placeholder="Enter Name or Nickname"
+                                fullWidth
+                                id="firstName"
+                                // label="Name or Nickname"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                autoFocus
+                            />
+                        </Grid>
+                        <Grid item xs={4} >
+                            Current Degree:
+                        </Grid>
+                        <Grid item xs={5}  >
+                            <TextField
+                                variant="filled"
+                                fullWidth
+                                id="degree"
+                                value={this.state.degree}
+                                placeholder="Enter Degree"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                // label="Degree"
+                                onChange={this.handleChange}
+                                name="degree"
+                            />
+                        </Grid>
+                        <Grid item xs={4} >
+                            About Me:
+                        </Grid>
+                        <Grid item xs={5}  >
+                            <TextareaAutosize
+                                variant="outlined"
+                                value={this.state.aboutMe}
+                                placeholder="Let other students know a bit about yourself. You could include hobbies, interests, things you like doing etc."
+                                maxRows={5}
+                                style={{ width: "100%" }}
+                                minRows={5}
+                                label="Bio"
+                                onChange={this.handleChange}
+                                id="aboutMe"
+                                name="aboutMe"
+                            />
+                        </Grid>
+                        <Grid item xs={4} >
+                            Study Mode:
+                        </Grid>
+                        <Grid item xs={5}  >
+                            <div>
+                                {(() => {
+                                    if (this.state.studyMode != null) {
+                                        return <CheckBox data={this.state.studyMode}
+                                            onChildClick={this.handleValueFromCheckBox} />
+                                    }
+                                    else if (this.firstRender) {
 
-                <Typography component="h1" variant="h5" align="center">
-                    Profile
-                </Typography>
-                <form >
-                    <Box pb={3} width={500} pt={3}>
+                                        return <CheckBox data={[]}
+                                            onChildClick={this.handleValueFromCheckBox} />
+                                    }
 
-                        <TextField
-                            autoComplete="fname"
-                            name="firstName"
-                            value={this.state.firstName}
-                            // variant="outlined"
-                            onChange={this.handleChange}
-                            // placeholder="First Name"
-                            fullWidth
-                            id="firstName"
-                            label="First Name"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            autoFocus
-                        />
-                    </Box>
-                    <Box pb={3} width={500}>
-                        <TextField
-                            // variant="outlined"
-                            fullWidth
-                            id="lastName"
-                            onChange={this.handleChange}
-                            value={this.state.lastName}
-                            // placeholder="Last Name"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            label="Last Name"
-                            name="lastName"
-                            autoComplete="lname"
-                        />
-                    </Box>
-                    <Box pb={3} width={500}>
-                        <TextField
-                            // variant="outlined"
-                            fullWidth
-                            id="degree"
-                            value={this.state.degree}
-                            // placeholder="Degree"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            label="Degree"
-                            onChange={this.handleChange}
-                            name="degree"
-                        />
-                    </Box>
-                    <Box pb={3} width={500}>
-                        <TextareaAutosize
-                            variant="outlined"
-                            placeholder="Enter Bio"
-                            maxRows={5}
-                            style={{ width: "100%" }}
-                            minRows={5}
+                                })()}
+                            </div>
+                        </Grid>
+                        <Grid item xs={4} >
+                            Select Units:
+                        </Grid>
+                        <Grid item xs={5}  >
+                            <div>
+                                {(() => {
+                                    if (this.state.units != null) {
+                                        return <ComboBox
+                                            data={this.state.units} onChildClick={this.handleValueFromComboBox}
+                                        />;
+                                    }
+                                    else if (this.firstRender) {
+                                        return <ComboBox
+                                            data={[]} onChildClick={this.handleValueFromComboBox}
+                                        />;
+                                    }
 
-                            label="Bio"
-                            id="bio"
-                            name="bio"
-                        />
-                    </Box>
-            
-                    <div>
-                        {(() => {
-                            console.log(this.state.studyMode)
-                            console.log(this.firstRender)
-                            if (this.state.studyMode != null) {
-                                return  <CheckBox data={this.state.studyMode} 
-                                onChildClick={this.handleValueFromCheckBox} />
-                            }
-                            else if (this.firstRender) {
-                               
-                                return <CheckBox data={[]} 
-                                onChildClick={this.handleValueFromCheckBox} />
-                            }
-
-                        })()}
-                    </div>
-                    <div>
-                        {(() => {
-                            if (this.state.units != null) {
-                                return <ComboBox
-                                    data={this.state.units} onChildClick={this.handleValueFromComboBox}
-                                />;
-                            }
-                            else if (this.firstRender) {
-                                return <ComboBox
-                                    data={[]} onChildClick={this.handleValueFromComboBox}
-                                />;
-                            }
-
-                        })()}
-                    </div>
-                    
-                    <Button
-                        onClick={this.handleSubmit}
-                        variant="contained"
-                        color="primary"
-                    >
-                        Update Profile
-                    </Button>
-
+                                })()}
+                            </div>
+                        </Grid>
+                        <Grid item xs={8}></Grid>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <br></br>
+                        <Grid item xs={3}>
+                        <Button
+                            onClick={this.handleSubmit}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Update Profile
+                        </Button>
+                        </Grid>
+                    </Grid>
                 </form>
-            </Container>
+               
+
+            </Container >
         )
     }
 }
 
 export default Profile
+
+
 

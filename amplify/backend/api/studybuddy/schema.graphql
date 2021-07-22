@@ -5,6 +5,7 @@ type Student @model
   email: String!
   firstName: String
   lastName: String
+  aboutMe: String
   degree: String
   units:[String]
   studyMode: [String]
