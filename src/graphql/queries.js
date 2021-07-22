@@ -12,6 +12,8 @@ export const getStudent = /* GraphQL */ `
       degree
       units
       studyMode
+      notifiedUsers
+      buddies
       createdAt
       updatedAt
     }
@@ -33,6 +35,8 @@ export const listStudents = /* GraphQL */ `
         degree
         units
         studyMode
+        notifiedUsers
+        buddies
         createdAt
         updatedAt
       }
@@ -64,6 +68,8 @@ export const studentByEmail = /* GraphQL */ `
         degree
         units
         studyMode
+        notifiedUsers
+        buddies
         createdAt
         updatedAt
       }

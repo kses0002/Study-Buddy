@@ -1,6 +1,7 @@
 import { API, Auth } from 'aws-amplify'
 import React from 'react';
 import * as queries from './graphql/queries';
+import * as mutations from './graphql/mutations';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -23,11 +24,13 @@ export default class ViewStudents extends React.Component {
             list: [],
             searchTerm: "",
             searchlist: [],
-            expandEmail:""
+            expandEmail:"",
+            currentUser:""
         }
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleExpandClick = this.handleExpandClick.bind(this);
+        this.handleAddBuddy = this.handleAddBuddy.bind(this);
 
     }
 
@@ -47,10 +50,10 @@ export default class ViewStudents extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
+                    this.setState({...this.state, currentUser:currentStudent})
 
                     API.graphql({ query: queries.listStudents }).then((studentData) => {
                         const allStudents = studentData.data.listStudents.items
-                        console.log(allStudents)
 
                         for (let i = 0; i < allStudents.length; i++) {
                             for (let j = 0; j < currentStudent.units.length; j++) {
@@ -112,6 +115,38 @@ export default class ViewStudents extends React.Component {
             { ...this.state, searchTerm: event.target.value }, () => this.updateState())
     }
 
+    handleAddBuddy(addedBuddy){
+        
+        const currentUser=this.state.currentUser
+
+        delete currentUser.createdAt
+        delete currentUser.updatedAt
+        delete addedBuddy.createdAt
+        delete addedBuddy.updatedAt
+
+        // currentUser.notifiedUsers=[]
+
+        if(!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null ){
+            currentUser.notifiedUsers=[addedBuddy.email]
+        }
+        else if(!(currentUser.notifiedUsers.includes(addedBuddy.email))){
+            currentUser.notifiedUsers.push(addedBuddy.email)
+        }
+
+        console.log(addedBuddy)
+        if(!(addedBuddy.hasOwnProperty("notifiedUsers")) || addedBuddy.notifiedUsers == null){
+            addedBuddy.notifiedUsers=[currentUser.email]
+        }
+        else if(!(addedBuddy.notifiedUsers.includes(currentUser.email))){
+            addedBuddy.notifiedUsers.push(currentUser.email)
+        }
+       
+        console.log(addedBuddy)
+        console.log(currentUser)
+        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
+    }
+
     render(props) {
 
         return (
@@ -150,7 +185,7 @@ export default class ViewStudents extends React.Component {
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small">Add</Button>
+                                    <Button size="small" onClick={()=>this.handleAddBuddy(card)}>Add</Button>
                                     <Button size="small">Dismiss</Button>
                                     <IconButton
                                         onClick={() => this.handleExpandClick(card.email)}

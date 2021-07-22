@@ -3,28 +3,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 export default function Checkboxes({ data, onChildClick }) {
-    console.log(data)
-    // const studyModeData = data
-    // var onCampusCheck = false;
-    // var offCampusCheck = false;
-    // var virtualCheck = false;
-    // var extractData=false;
-    // for (let i = 0; i < studyModeData.length; i++) {
-    //     if (studyModeData[i] == "On-Campus") {
-    //         onCampusCheck = true;
-    //     }
-    //     if (studyModeData[i] == "Off-Campus") {
-    //         offCampusCheck = true;
-    //     }
-    //     if (studyModeData[i] == "Virtual") {
-    //         virtualCheck = true;
-            
-    //     }
-    // }
-
-    // extractData=true
-
-    // console.log(onCampusCheck)
      if (data!=null ) {
         return (
             <div>

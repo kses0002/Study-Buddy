@@ -9,6 +9,7 @@ import { NavigationBar } from './NavigationBar';
 
 import  Profile  from './Profile.js';
 import  ViewStudents  from './ViewStudents.js';
+import ViewBuddies from './ViewBuddies/ViewBuddies.js'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Switch>
           <Route exact path="/ViewProfile" component={Profile} />
           <Route path="/ViewStudents" component={ViewStudents} />
+          <Route path="/ViewBuddies" component={ViewBuddies} />
           {/* <Route component={Home} /> */}
         </Switch>
       </Router>
