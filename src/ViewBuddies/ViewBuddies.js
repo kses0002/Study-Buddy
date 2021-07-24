@@ -1,9 +1,10 @@
-import { DriveEtaRounded } from '@material-ui/icons';
 import Amplify, { API, Auth } from 'aws-amplify'
 import React from 'react';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
+import Chat from './Chat'
+
 
 
 class ViewBuddies extends React.Component {
@@ -34,8 +35,6 @@ class ViewBuddies extends React.Component {
     }
 
     handleAcceptBuddy(acceptedBuddyEmail) {
-
-
 
         delete this.state.currentUser.createdAt
         delete this.state.currentUser.updatedAt
@@ -70,6 +69,16 @@ class ViewBuddies extends React.Component {
                             }
                         }
                         )
+                }
+
+                const tempArray = [...this.state.potentialBuddies]
+                const index = tempArray.indexOf(acceptedBuddy.email)
+                if (index != -1) {
+                    tempArray.splice(index, 1)
+                    this.state.currentUser.notifiedUsers = tempArray
+                    this.setState({ ...this.state, potentialBuddies: tempArray })
+
+
                 }
 
                 if (!(acceptedBuddy.hasOwnProperty("buddies")) || acceptedBuddy.buddies == null) {
@@ -113,6 +122,9 @@ class ViewBuddies extends React.Component {
 
                     {/* ))} */}
                 </div>
+                <div>
+                    <Chat></Chat>
+                </div>
             </div>
 
         )
@@ -121,79 +133,5 @@ class ViewBuddies extends React.Component {
 
 export default ViewBuddies
 
-
-// handleAcceptBuddy(acceptedBuddyEmail) {
-//     // const currentUser = this.state.currentUser
-
-
-//     this.setState
-//     (state => {
-//         const a = [...state.a, "1"];
-//         return {
-//             a,
-//         }
-//     }
-//     )
-
-//     delete this.state.currentUser.createdAt
-//     delete this.state.currentUser.updatedAt
-
-
-//     API.graphql({ query: queries.studentByEmail, variables: { email: acceptedBuddyEmail } })
-//         .then((studentData) => {
-
-//             const acceptedBuddy = studentData.data.studentByEmail.items[0]
-
-//             delete acceptedBuddy.createdAt
-//             delete acceptedBuddy.updatedAt
-
-
-
-//             if (!(this.state.currentUser.hasOwnProperty("buddies")) || this.state.currentUser.buddies == null) {
-//                 this.state.currentUser.buddies = [acceptedBuddy.email]
-//             }
-//             else if (!(this.state.currentUser.buddies.includes(acceptedBuddy.email))) {
-//                 console.log(this.state)
-//                 currentUser.buddies.push(acceptedBuddy.email)
-
-//             }
-
-//             // this.setState
-//             // (state => {
-//             //     const myBuddies = [...state.myBuddies, acceptedBuddy];
-//             //     return {
-//             //         myBuddies,
-//             //     }
-//             // }
-//             // )
-
-//             if (!(acceptedBuddy.hasOwnProperty("buddies")) || acceptedBuddy.buddies == null) {
-//                 acceptedBuddy.buddies = [currentUser.email]
-//             }
-//             else if (!(acceptedBuddy.buddies.includes(currentUser.email))) {
-//                 acceptedBuddy.buddies.push(currentUser.email)
-//             }
-
-//             // if (this.state.myBuddies.length==0){
-//             //     this.setState({...this.state,myBuddies:acceptedBuddy})
-//             // }
-
-
-
-//             // console.log(acceptedBuddy)
-//             console.log(currentUser)
-//             console.log(this.state)
-
-//             // currentUser.buddies=[]
-
-//             // API.graphql({ query: mutations.updateStudent, variables: { input: acceptedBuddy } });
-//             // API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
-//         })
-
-
-
-
-
-// }
 
 

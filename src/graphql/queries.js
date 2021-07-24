@@ -44,6 +44,39 @@ export const listStudents = /* GraphQL */ `
     }
   }
 `;
+export const getMessage = /* GraphQL */ `
+  query GetMessage($id: ID!) {
+    getMessage(id: $id) {
+      id
+      channelID
+      author
+      recepient
+      body
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listMessages = /* GraphQL */ `
+  query ListMessages(
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        channelID
+        author
+        recepient
+        body
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const studentByEmail = /* GraphQL */ `
   query StudentByEmail(
     $email: String
@@ -70,6 +103,36 @@ export const studentByEmail = /* GraphQL */ `
         studyMode
         notifiedUsers
         buddies
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const messagesByChannelID = /* GraphQL */ `
+  query MessagesByChannelID(
+    $channelID: ID
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesByChannelID(
+      channelID: $channelID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        channelID
+        author
+        recepient
+        body
         createdAt
         updatedAt
       }

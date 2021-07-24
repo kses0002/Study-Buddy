@@ -12,3 +12,14 @@ type Student @model
   notifiedUsers: [String]
   buddies: [String]
 }
+
+type Message @model
+@key(name:"byChannelID", fields:["channelID","createdAt"],queryField:"messagesByChannelID"){
+  id: ID!
+  channelID: ID!
+  author: String!
+  recepient: String!
+  body: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
