@@ -10,6 +10,7 @@ type Student @model
   units:[String]
   studyMode: [String]
   notifiedUsers: [String]
+  recievedRequests: [String]
   buddies: [String]
 }
 

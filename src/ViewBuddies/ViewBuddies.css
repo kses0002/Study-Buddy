@@ -28,14 +28,15 @@
     /* width: 100%; */
     background: bisque;
     flex:3;
-    overflow-y: scroll;
+    
     
 }
 
 .middlepane {
     /* width: 100%; */
-    background: yellow;
+    background: papayawhip;
     flex:3;
+    overflow-y: scroll;
     
 }
 
@@ -43,8 +44,26 @@
     /* width: 40%; */
     background: red;
     flex:2;
+    
 }
 
 #root{
     height: 92.5%;
 }
+
+.Card{
+    display: flex;
+}
+
+.CardContent{
+    /* background: red; */
+    flex:4
+}
+
+.CardAction{
+    /* background: green; */
+
+}
+
+
+

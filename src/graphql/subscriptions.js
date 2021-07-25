@@ -13,6 +13,7 @@ export const onCreateStudent = /* GraphQL */ `
       units
       studyMode
       notifiedUsers
+      recievedRequests
       buddies
       createdAt
       updatedAt
@@ -31,6 +32,7 @@ export const onUpdateStudent = /* GraphQL */ `
       units
       studyMode
       notifiedUsers
+      recievedRequests
       buddies
       createdAt
       updatedAt
@@ -49,6 +51,7 @@ export const onDeleteStudent = /* GraphQL */ `
       units
       studyMode
       notifiedUsers
+      recievedRequests
       buddies
       createdAt
       updatedAt

@@ -13,6 +13,7 @@ export const getStudent = /* GraphQL */ `
       units
       studyMode
       notifiedUsers
+      recievedRequests
       buddies
       createdAt
       updatedAt
@@ -36,6 +37,7 @@ export const listStudents = /* GraphQL */ `
         units
         studyMode
         notifiedUsers
+        recievedRequests
         buddies
         createdAt
         updatedAt
@@ -102,6 +104,7 @@ export const studentByEmail = /* GraphQL */ `
         units
         studyMode
         notifiedUsers
+        recievedRequests
         buddies
         createdAt
         updatedAt

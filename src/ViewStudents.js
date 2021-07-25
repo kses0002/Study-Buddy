@@ -134,11 +134,11 @@ export default class ViewStudents extends React.Component {
         }
 
         console.log(addedBuddy)
-        if(!(addedBuddy.hasOwnProperty("notifiedUsers")) || addedBuddy.notifiedUsers == null){
-            addedBuddy.notifiedUsers=[currentUser.email]
+        if(!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null){
+            addedBuddy.recievedRequests=[currentUser.email]
         }
-        else if(!(addedBuddy.notifiedUsers.includes(currentUser.email))){
-            addedBuddy.notifiedUsers.push(currentUser.email)
+        else if(!(addedBuddy.recievedRequests.includes(currentUser.email))){
+            addedBuddy.recievedRequests.push(currentUser.email)
         }
        
         console.log(addedBuddy)
