@@ -1,10 +1,9 @@
 import Amplify, { API, Auth } from 'aws-amplify'
 import React from 'react';
-import * as queries from '../graphql/queries';
-import * as mutations from '../graphql/mutations';
+import * as queries from './graphql/queries';
+import * as mutations from './graphql/mutations';
 import Button from '@material-ui/core/Button';
-import Chat from './Chat'
-import './ViewBuddies.css'
+
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,17 +13,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 
 
-class ViewBuddies extends React.Component {
+class FriendRequest extends React.Component {
     constructor() {
         super();
         this.state = {
             potentialBuddies: [],
             currentUser: [],
-            myBuddies: [],
-            a: []
         }
-        this.handleAcceptBuddy = this.handleAcceptBuddy.bind(this);
-
     }
 
     componentWillMount() {
@@ -35,8 +30,6 @@ class ViewBuddies extends React.Component {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
                     this.setState({ ...this.state, currentUser: currentStudent })
 
-                    this.setState({ ...this.state, myBuddies: currentStudent.buddies })
-                    console.log(currentStudent.notifiedUsers)
 
                     for (let i = 0; i < currentStudent.notifiedUsers.length; i++) {
                         API.graphql({ query: queries.studentByEmail, variables: { email: currentStudent.notifiedUsers[i] } })
@@ -49,7 +42,6 @@ class ViewBuddies extends React.Component {
                                         }
                                     }
                                     )
-                                console.log(this.state)
                             })
                     }
 
@@ -122,11 +114,6 @@ class ViewBuddies extends React.Component {
                     <div className="toppane">
                         <h1>Requests</h1>
                         {this.state.potentialBuddies.map(buddies => (
-                            // <div>
-                            //     <p>{buddies.email}</p>
-                            //     <Button size="small" onClick={() => this.handleAcceptBuddy(buddies)}>Accept</Button>
-                            // </div>
-
                             <Grid container spacing={2} justifyContent="center">
                                 <Grid item xs={12}   >
                                     <Card>
@@ -150,15 +137,6 @@ class ViewBuddies extends React.Component {
                         ))}
 
                     </div>
-                    <div className="middlepane">
-                        <h1>Friends</h1>
-                        <p>{this.state.currentUser.buddies}</p>
-                    </div>
-                </div>
-                <div className="rightChat">
-                    <div className="bottompane">
-                        <Chat></Chat>
-                    </div>
                 </div>
             </div>
 
@@ -166,7 +144,6 @@ class ViewBuddies extends React.Component {
     }
 }
 
-export default ViewBuddies
-
+export default FriendRequest
 
 

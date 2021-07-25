@@ -10,6 +10,7 @@ import { NavigationBar } from './NavigationBar';
 import  Profile  from './Profile.js';
 import  ViewStudents  from './ViewStudents.js';
 import ViewBuddies from './ViewBuddies/ViewBuddies.js'
+import FriendRequest from './FriendRequest.js'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route exact path="/ViewProfile" component={Profile} />
           <Route path="/ViewStudents" component={ViewStudents} />
           <Route path="/ViewBuddies" component={ViewBuddies} />
+          <Route path="/FriendRequest" component={FriendRequest} />
           {/* <Route component={Home} /> */}
         </Switch>
       </Router>

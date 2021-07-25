@@ -1,0 +1,50 @@
+.splitscreen {
+    display: flex;
+    height:100%;    
+}
+
+.leftList{
+    display: flex;
+    flex-direction: column;
+    flex-basis:35%;
+
+
+    /* position: absolute; */
+    /* top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; */
+    /* padding: 16px; */
+    
+    
+}
+
+.rightChat{
+    display: flex;
+    flex-basis: 65%;
+}
+
+.toppane {
+    /* width: 100%; */
+    background: bisque;
+    flex:3;
+    overflow-y: scroll;
+    
+}
+
+.middlepane {
+    /* width: 100%; */
+    background: yellow;
+    flex:3;
+    
+}
+
+.bottompane {
+    /* width: 40%; */
+    background: red;
+    flex:2;
+}
+
+#root{
+    height: 92.5%;
+}

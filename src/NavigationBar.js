@@ -31,6 +31,7 @@ export const NavigationBar = () => (
           <Nav.Item><Nav.Link href="/ViewStudents">View Students</Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/ViewProfile">Profile</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link href="/ViewBuddies">Buddies</Nav.Link></Nav.Item>
+          <Nav.Item><Nav.Link href="/FriendRequest">Friend Requests</Nav.Link></Nav.Item>
           <Nav.Item><AmplifySignOut/></Nav.Item>
         </Nav>
       </Navbar.Collapse>
