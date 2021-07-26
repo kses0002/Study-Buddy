@@ -67,7 +67,6 @@ class ViewBuddies extends React.Component {
     handleClick = (event, infoEmail) => {
         console.log(event.currentTarget)
         this.setState({ ...this.state, anchorE1: event.currentTarget, expandedBuddy: infoEmail });
-        // this.setState({ ...this.state, expandedBuddy: infoEmail });
         console.log(this.state)
 
     };
@@ -79,11 +78,9 @@ class ViewBuddies extends React.Component {
 
     handleCardClick(reciepientEmail) {
         this.setState({ ...this.state, messageRecipient: reciepientEmail })
-        // console.log(this.state)
     }
 
     render(props) {
-        // const { messageRecipient } = this.state.messageRecipient
 
         return (
             <div className="splitscreen">
@@ -91,11 +88,12 @@ class ViewBuddies extends React.Component {
                     <div className="middlepane">
                         <h1>Friends</h1>
                         {this.state.myBuddies.map(buddies => (
-                            <div onClick={() => this.handleCardClick(buddies.email)}>
+                            // <div onClick={() => this.handleCardClick(buddies.email)}>
+                            <div>
                                 <Grid container spacing={2} justifyContent="center" >
                                     <Grid item xs={12}   >
                                         <Card className="Card">
-                                            <CardContent className="CardContent">
+                                            <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email)}>
                                                 {buddies.firstName}
                                             </CardContent>
                                             <CardActions className="CardAction">
@@ -105,10 +103,7 @@ class ViewBuddies extends React.Component {
 
                                                 <Popover
                                                     getContentAnchorEl={null}
-
-                                                    // open={Boolean(this.state.infoAnchor)}
                                                     open={this.state.expandedBuddy == buddies.email}
-
                                                     anchorEl={this.state.anchorE1}
                                                     onClose={this.handleClose}
                                                     anchorOrigin={{
@@ -145,16 +140,10 @@ class ViewBuddies extends React.Component {
                 </div>
                 <div className="rightChat">
                     <div className="bottompane">
-                        {/* {console.log(this.state.messageRecipient)} */}
                         {this.state.messageRecipient != null && this.state.messageRecipient != undefined
                             ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email}/>
-                            // ? <Test1 data={this.state.messageRecipient} />
-                            // ? console.log(this.state.messageRecipient)
                             : <div></div>
                         }
-                        {/* {console.log(this.state.messageRecipient)} */}
-                        {/* <Chat data={this.state.messageRecipient} /> */}
-                        {/* <Chat data={this.state.messageRecipient} /> */}
                     </div>
                 </div>
             </div>
