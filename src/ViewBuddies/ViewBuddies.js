@@ -4,6 +4,7 @@ import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
 import Chat from './Chat'
+import Test1 from './test1'
 import './ViewBuddies.css'
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -24,11 +25,13 @@ class ViewBuddies extends React.Component {
             currentUser: [],
             myBuddies: [],
             anchorE1: null,
-            expandedBuddy: ""
+            expandedBuddy: "",
+            messageRecipient: null
         }
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
 
     }
 
@@ -38,9 +41,7 @@ class ViewBuddies extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
-                    // this.setState({ ...this.state, currentUser: currentStudent })
-                    console.log(currentStudent)
-                    // this.setState({ ...this.state, myBuddies: currentStudent.buddies })
+                    this.setState({...this.state, currentUser:currentStudent})
 
                     if (currentStudent.buddies != null) {
                         for (let i = 0; i < currentStudent.buddies.length; i++) {
@@ -68,7 +69,7 @@ class ViewBuddies extends React.Component {
         this.setState({ ...this.state, anchorE1: event.currentTarget, expandedBuddy: infoEmail });
         // this.setState({ ...this.state, expandedBuddy: infoEmail });
         console.log(this.state)
-        
+
     };
 
     handleClose = () => {
@@ -76,8 +77,13 @@ class ViewBuddies extends React.Component {
         this.setState({ ...this.state, expandedBuddy: null });
     };
 
-    render(props) {
+    handleCardClick(reciepientEmail) {
+        this.setState({ ...this.state, messageRecipient: reciepientEmail })
+        // console.log(this.state)
+    }
 
+    render(props) {
+        // const { messageRecipient } = this.state.messageRecipient
 
         return (
             <div className="splitscreen">
@@ -85,59 +91,70 @@ class ViewBuddies extends React.Component {
                     <div className="middlepane">
                         <h1>Friends</h1>
                         {this.state.myBuddies.map(buddies => (
-                            <Grid container spacing={2} justifyContent="center">
-                                <Grid item xs={12}   >
-                                    <Card className="Card">
-                                        <CardContent className="CardContent">
-                                            {buddies.firstName}
-                                        </CardContent>
-                                        <CardActions className="CardAction">
-                                            <IconButton color="primary" onClick={(e)=>this.handleClick(e, buddies.email)}>
-                                                <InfoIcon></InfoIcon>
-                                            </IconButton>
-                                            
-                                            <Popover
-                                                                                                getContentAnchorEl={null}
+                            <div onClick={() => this.handleCardClick(buddies.email)}>
+                                <Grid container spacing={2} justifyContent="center" >
+                                    <Grid item xs={12}   >
+                                        <Card className="Card">
+                                            <CardContent className="CardContent">
+                                                {buddies.firstName}
+                                            </CardContent>
+                                            <CardActions className="CardAction">
+                                                <IconButton color="primary" onClick={(e) => this.handleClick(e, buddies.email)}>
+                                                    <InfoIcon></InfoIcon>
+                                                </IconButton>
 
-                                                // open={Boolean(this.state.infoAnchor)}
-                                                open={this.state.expandedBuddy==buddies.email}
-                                                
-                                                anchorEl={this.state.anchorE1}
-                                                onClose={this.handleClose}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'center',
-                                                }}
-                                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'center',
-                                                }}
-                                            >
-                                                <div>
-                                                    Units: {buddies.units.map((item) =>
-                                                        <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                    <br></br>
-                                                    Study Mode: {buddies.studyMode.map((item) =>
-                                                        <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                    <br></br>
-                                                    <Typography paragraph>
-                                                        About me: {buddies.aboutMe}
-                                                    </Typography>
+                                                <Popover
+                                                    getContentAnchorEl={null}
 
-                                                </div>
+                                                    // open={Boolean(this.state.infoAnchor)}
+                                                    open={this.state.expandedBuddy == buddies.email}
 
-                                            </Popover>
-                                            {/* {console.log(this.state.infoAnchor)} */}
-                                        </CardActions>
-                                    </Card>
+                                                    anchorEl={this.state.anchorE1}
+                                                    onClose={this.handleClose}
+                                                    anchorOrigin={{
+                                                        vertical: 'bottom',
+                                                        horizontal: 'center',
+                                                    }}
+                                                    transformOrigin={{
+                                                        vertical: 'top',
+                                                        horizontal: 'center',
+                                                    }}
+                                                >
+                                                    <div>
+                                                        Units: {buddies.units.map((item) =>
+                                                            <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
+                                                        <br></br>
+                                                        Study Mode: {buddies.studyMode.map((item) =>
+                                                            <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
+                                                        <br></br>
+                                                        <Typography paragraph>
+                                                            About me: {buddies.aboutMe}
+                                                        </Typography>
+
+                                                    </div>
+
+                                                </Popover>
+
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
+                            </div>
                         ))}
                     </div>
                 </div>
                 <div className="rightChat">
                     <div className="bottompane">
-                        <Chat></Chat>
+                        {/* {console.log(this.state.messageRecipient)} */}
+                        {this.state.messageRecipient != null && this.state.messageRecipient != undefined
+                            ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email}/>
+                            // ? <Test1 data={this.state.messageRecipient} />
+                            // ? console.log(this.state.messageRecipient)
+                            : <div></div>
+                        }
+                        {/* {console.log(this.state.messageRecipient)} */}
+                        {/* <Chat data={this.state.messageRecipient} /> */}
+                        {/* <Chat data={this.state.messageRecipient} /> */}
                     </div>
                 </div>
             </div>

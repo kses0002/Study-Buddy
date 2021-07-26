@@ -1,7 +1,5 @@
-import Amplify, { API, Auth } from 'aws-amplify'
-import React, { useEffect, useState } from 'react';
-import * as queries from '../graphql/queries';
-import * as mutations from '../graphql/mutations';
+import { API, Auth } from 'aws-amplify'
+import React, { useEffect, useState, useStateRef } from 'react';
 import Button from '@material-ui/core/Button';
 import { graphqlOperation } from '@aws-amplify/api';
 import { messagesByChannelID } from '../graphql/queries';
@@ -9,11 +7,25 @@ import { createMessage } from '../graphql/mutations';
 import { onCreateMessage } from '../graphql/subscriptions'
 import './Chat.css'
 
-function Chat() {
+function Chat({ data, currentUserEmail }) {
 
     const [messages, setMessages] = useState([]);
     const [messageBody, setMessageBody] = useState('');
     const [userInfo, setUserInfo] = useState(null)
+    const [recipientEmail = data, setRecipientEmail, emailRef] = useState()
+
+    // useEffect(() => {
+    //     setRecipientEmail(data)
+    // }, [])
+    
+    useEffect(() => {
+        // console.log(recipientEmail)
+        setRecipientEmail(data.emailRef)
+        // console.log(recipientEmail)
+    }, [data])
+    console.log(recipientEmail)
+
+   
 
     useEffect(() => {
         Auth.currentUserInfo().then((userInfo) => {
@@ -21,8 +33,8 @@ function Chat() {
         })
     }, [])
 
-
     useEffect(() => {
+        setMessages([])
         API
             .graphql(graphqlOperation(messagesByChannelID, {
                 channelID: '1',
@@ -31,14 +43,19 @@ function Chat() {
             .then((response) => {
                 const items = response?.data?.messagesByChannelID?.items;
                 for (let i = 0; i < items.length; i++) {
-                    if ((items[i].author == "keshav.sesh@gmail.com"
-                        && items[i].recepient == "keshavpriya@yahoo.com") || (items[i].recepient == "keshavpriya@yahoo.com"
-                        && items[i].author == "keshavpriya@yahoo.com")) {
+                    // if ((items[i].author == "keshavpriya@yahoo.com"
+                    //     && items[i].recepient == "keshav.sesh@gmail.com") || (items[i].recepient == "keshavpriya@yahoo.com"
+                    //         && items[i].author == "keshav.sesh@gmail.com")) {
+                    if ((items[i].author == currentUserEmail
+                        && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
+                            && items[i].author == recipientEmail)) {
+
                         setMessages(oldItems => [...oldItems, items[i]])
+
                     }
                 }
             })
-    }, []);
+    }, [data]);
 
     useEffect(() => {
         const subscription = API
@@ -66,7 +83,7 @@ function Chat() {
             channelID: '1',
             author: userInfo.attributes.email,
             body: messageBody.trim(),
-            recepient: "keshavpriya@yahoo.com"
+            recepient: recipientEmail
         };
 
         try {
