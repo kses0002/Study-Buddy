@@ -1,7 +1,7 @@
 import { API, Auth } from 'aws-amplify'
 import React from 'react';
-import * as queries from './graphql/queries';
-import * as mutations from './graphql/mutations';
+import * as queries from '../graphql/queries';
+import * as mutations from '../graphql/mutations';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';

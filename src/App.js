@@ -7,10 +7,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NavigationBar } from './NavigationBar';
 
 
-import  Profile  from './Profile.js';
-import  ViewStudents  from './ViewStudents.js';
+import  Profile  from './Profile//Profile.js';
+import  ViewStudents  from './View Students/ViewStudents.js';
 import ViewBuddies from './ViewBuddies/ViewBuddies.js'
-import FriendRequest from './FriendRequest.js'
+import FriendRequest from './Friend Requests/FriendRequest.js'
 
 function App() {
   return (

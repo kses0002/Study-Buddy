@@ -1,8 +1,8 @@
 import Amplify, { API, Auth } from 'aws-amplify'
-import awsExports from "./aws-exports";
+import awsExports from "../aws-exports";
 import React from 'react';
-import * as queries from './graphql/queries';
-import * as mutations from './graphql/mutations';
+import * as queries from '../graphql/queries';
+import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
