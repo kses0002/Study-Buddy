@@ -15,6 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 import './ViewStudents.css';
 import IconButton from '@material-ui/core/IconButton';
+import Pagination from '@material-ui/lab/Pagination';
 
 export default class ViewStudents extends React.Component {
     constructor() {
@@ -24,25 +25,36 @@ export default class ViewStudents extends React.Component {
             list: [],
             searchTerm: "",
             searchlist: [],
-            expandEmail:"",
-            currentUser:""
+            expandEmail: "",
+            currentUser: "",
+            pageNumber: 0
         }
+
+        this.usersPerPage = 5
+        this.pageCount = 0;
+        this.pagesVisited=0;
+
+
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleExpandClick = this.handleExpandClick.bind(this);
         this.handleAddBuddy = this.handleAddBuddy.bind(this);
+        this.changePage = this.changePage.bind(this);
 
     }
 
-    handleExpandClick  (cardEmail)  {
-        console.log()
-        if (cardEmail == this.state.expandEmail){
-            this.setState({...this.state, expandEmail: ''});
+    changePage(event) {
+        this.setState({ ...this.state, pageNumber: parseInt(event.target.innerText) });
+    };
+
+    handleExpandClick(cardEmail) {
+        if (cardEmail == this.state.expandEmail) {
+            this.setState({ ...this.state, expandEmail: '' });
         }
-        else{
-        this.setState({...this.state, expandEmail: cardEmail});
+        else {
+            this.setState({ ...this.state, expandEmail: cardEmail });
         }
-      };
+    };
 
     componentWillMount() {
         Auth.currentAuthenticatedUser().then((user) => {
@@ -50,7 +62,7 @@ export default class ViewStudents extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
-                    this.setState({...this.state, currentUser:currentStudent})
+                    this.setState({ ...this.state, currentUser: currentStudent })
 
                     API.graphql({ query: queries.listStudents }).then((studentData) => {
                         const allStudents = studentData.data.listStudents.items
@@ -72,13 +84,16 @@ export default class ViewStudents extends React.Component {
                             }
                         }
 
+
+                        this.pageCount = Math.ceil(Object.keys(this.similarStudents).length / this.usersPerPage);
+
+
                         for (var key in this.similarStudents) {
                             if (this.similarStudents.hasOwnProperty(key)) {
                                 this.setState(state => {
                                     const list = [...state.list, this.similarStudents[key]];
                                     return {
                                         list,
-                                        //searchTerm
                                     }
                                 })
                             }
@@ -98,8 +113,6 @@ export default class ViewStudents extends React.Component {
             student.units.find(value => value.includes(this.state.searchTerm)) ||
             student.studyMode.find(value => value.includes(this.state.searchTerm))).
             map(filteredStudents => (
-                console.log("FILTER"),
-                console.log(filteredStudents),
                 this.setState
                     (state => {
                         const searchlist = [...state.searchlist, filteredStudents];
@@ -115,40 +128,41 @@ export default class ViewStudents extends React.Component {
             { ...this.state, searchTerm: event.target.value }, () => this.updateState())
     }
 
-    handleAddBuddy(addedBuddy){
-        
-        const currentUser=this.state.currentUser
+    handleAddBuddy(addedBuddy) {
+
+        const currentUser = this.state.currentUser
 
         delete currentUser.createdAt
         delete currentUser.updatedAt
         delete addedBuddy.createdAt
         delete addedBuddy.updatedAt
 
-        // currentUser.notifiedUsers=[]
-
-        if(!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null ){
-            currentUser.notifiedUsers=[addedBuddy.email]
+        if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
+            currentUser.notifiedUsers = [addedBuddy.email]
         }
-        else if(!(currentUser.notifiedUsers.includes(addedBuddy.email))){
+        else if (!(currentUser.notifiedUsers.includes(addedBuddy.email))) {
             currentUser.notifiedUsers.push(addedBuddy.email)
         }
 
-        console.log(addedBuddy)
-        if(!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null){
-            addedBuddy.recievedRequests=[currentUser.email]
+        if (!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null) {
+            addedBuddy.recievedRequests = [currentUser.email]
         }
-        else if(!(addedBuddy.recievedRequests.includes(currentUser.email))){
+        else if (!(addedBuddy.recievedRequests.includes(currentUser.email))) {
             addedBuddy.recievedRequests.push(currentUser.email)
         }
-       
-        console.log(addedBuddy)
-        console.log(currentUser)
+
         API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
         API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
     }
 
     render(props) {
-
+        this.pagesVisited = (this.state.pageNumber-1) * this.usersPerPage
+        
+        if(this.pagesVisited<0){
+            this.pagesVisited=0
+        }
+      
+        
         return (
             <div className="root">
                 <div>
@@ -163,9 +177,8 @@ export default class ViewStudents extends React.Component {
                 <br></br>
                 <br></br>
                 <Grid container spacing={4} justifyContent="center">
-                    {this.state.searchlist.map(card => (
-           
-
+                    {console.log(this.state.searchlist)}
+                    {this.state.searchlist.slice(this.pagesVisited,this.pagesVisited+ this.usersPerPage).map(card => (
                         <Grid item xs={12} sm={6} md={3}  >
                             <Card className="card" >
                                 <CardHeader
@@ -185,7 +198,7 @@ export default class ViewStudents extends React.Component {
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small" onClick={()=>this.handleAddBuddy(card)}>Add</Button>
+                                    <Button size="small" onClick={() => this.handleAddBuddy(card)}>Add</Button>
                                     <Button size="small">Dismiss</Button>
                                     <IconButton
                                         onClick={() => this.handleExpandClick(card.email)}
@@ -195,7 +208,7 @@ export default class ViewStudents extends React.Component {
                                         <ExpandMoreIcon />
                                     </IconButton>
                                 </CardActions>
-                                <Collapse in={card.email==this.state.expandEmail} timeout="auto"  unmountOnExit>
+                                <Collapse in={card.email == this.state.expandEmail} timeout="auto" unmountOnExit>
                                     <CardContent>
                                         <Typography paragraph>About {card.firstName}:</Typography>
                                         <Typography paragraph>
@@ -208,9 +221,22 @@ export default class ViewStudents extends React.Component {
                     ))
                     }
                 </Grid>
+                <Pagination
+                    count={this.pageCount}
+                    onChange={this.changePage} />
             </div >
 
 
         )
     }
 }
+
+/*
+Tom
+ERin
+Olivia 
+
+Keshav
+Momo Adam
+
+*/

@@ -13,15 +13,9 @@ function Chat({ data, currentUserEmail }) {
     const [messageBody, setMessageBody] = useState('');
     const [userInfo, setUserInfo] = useState(null)
     const [recipientEmail = data, setRecipientEmail, emailRef] = useState()
-
-    // useEffect(() => {
-    //     setRecipientEmail(data)
-    // }, [])
     
     useEffect(() => {
-        // console.log(recipientEmail)
         setRecipientEmail(data.emailRef)
-        // console.log(recipientEmail)
     }, [data])
     console.log(recipientEmail)
 
@@ -43,9 +37,6 @@ function Chat({ data, currentUserEmail }) {
             .then((response) => {
                 const items = response?.data?.messagesByChannelID?.items;
                 for (let i = 0; i < items.length; i++) {
-                    // if ((items[i].author == "keshavpriya@yahoo.com"
-                    //     && items[i].recepient == "keshav.sesh@gmail.com") || (items[i].recepient == "keshavpriya@yahoo.com"
-                    //         && items[i].author == "keshav.sesh@gmail.com")) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
                             && items[i].author == recipientEmail)) {

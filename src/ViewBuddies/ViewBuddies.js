@@ -41,7 +41,7 @@ class ViewBuddies extends React.Component {
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
-                    this.setState({...this.state, currentUser:currentStudent})
+                    this.setState({ ...this.state, currentUser: currentStudent })
 
                     if (currentStudent.buddies != null) {
                         for (let i = 0; i < currentStudent.buddies.length; i++) {
@@ -88,7 +88,6 @@ class ViewBuddies extends React.Component {
                     <div className="middlepane">
                         <h1>Friends</h1>
                         {this.state.myBuddies.map(buddies => (
-                            // <div onClick={() => this.handleCardClick(buddies.email)}>
                             <div>
                                 <Grid container spacing={2} justifyContent="center" >
                                     <Grid item xs={12}   >
@@ -100,7 +99,6 @@ class ViewBuddies extends React.Component {
                                                 <IconButton color="primary" onClick={(e) => this.handleClick(e, buddies.email)}>
                                                     <InfoIcon></InfoIcon>
                                                 </IconButton>
-
                                                 <Popover
                                                     getContentAnchorEl={null}
                                                     open={this.state.expandedBuddy == buddies.email}
@@ -125,11 +123,8 @@ class ViewBuddies extends React.Component {
                                                         <Typography paragraph>
                                                             About me: {buddies.aboutMe}
                                                         </Typography>
-
                                                     </div>
-
                                                 </Popover>
-
                                             </CardActions>
                                         </Card>
                                     </Grid>
@@ -141,7 +136,7 @@ class ViewBuddies extends React.Component {
                 <div className="rightChat">
                     <div className="bottompane">
                         {this.state.messageRecipient != null && this.state.messageRecipient != undefined
-                            ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email}/>
+                            ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email} />
                             : <div></div>
                         }
                     </div>
@@ -153,6 +148,3 @@ class ViewBuddies extends React.Component {
 }
 
 export default ViewBuddies
-
-
-//<p>{this.state.currentUser.buddies}</p>
