@@ -11,32 +11,54 @@
 }
 
 .cardHeader1{
-    background-color: #1A2C42;
+    background-color: #F7CE76;
     /* background-color: #1A2C42; */
     color: white;
     
 }
 
 .cardHeader2{
-    background-color:#361999;
+    background-color:#2CCED2;
     /* background-color: #1A2C42; */
     color: white;
     
 }
 
 .cardHeader3{
-    background-color: #490B3D;
+    background-color: #F27348;
     /* background-color: #1A2C42; */
     color: white;
     
 }
 
 .cardHeader4{
-    background-color: #BD1E51;
+    background-color: #F9968B;
     /* background-color: #1A2C42; */
     color: white;
     
 }
+
+.cardHeader5{
+    background-color: #9AD9DB;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+.cardHeader6{
+    background-color: #E4CEE0;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+.cardHeader7{
+    background-color: #FF6495;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
 
 #addButton{
     background-color: red;

@@ -37,7 +37,7 @@ export default class ViewStudents extends React.Component {
         this.pageCount = 0;
         this.pagesVisited = 0;
 
-        this.cardHeader=["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4"]
+        this.cardHeader=["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4", "cardHeader5", "cardHeader6", "cardHeader7"]
 
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
@@ -187,8 +187,8 @@ export default class ViewStudents extends React.Component {
                             <Card className="card" >
                                 <CardHeader
                                     className={this.cardHeader[index % this.cardHeader.length]}
-                                    title={<Typography variant="h6">{card.firstName}</Typography>}
-                                    subheader={<Typography style={{color: "#cccccc"}}variant="body2" >{card.degree}</Typography>}
+                                    title={<Typography variant="h6" style={{color: "black"}}>{card.firstName}</Typography>}
+                                    subheader={<Typography style={{color: "black"}}variant="body2" >{card.degree}</Typography>}
                                     avatar={
                                         <Avatar aria-label="recipe" >
                                             {card.firstName[0]}
