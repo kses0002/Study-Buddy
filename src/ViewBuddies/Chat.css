@@ -53,8 +53,8 @@
   
   .message.me {
     align-self: flex-end;
-    background: #f19e38;
-    color: white;
+    background: #FFC003;
+    color: black;
   }
   
   .chat-bar {

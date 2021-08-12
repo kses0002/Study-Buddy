@@ -2,13 +2,20 @@
     background: radial-gradient(#e5e5e5,#ffff,#e5e5e5);
 } */
 
+.card{
+    color:red;
+}
+
 .card:hover{
     box-shadow: 5px 10px 20px 1px rgba(0, 0, 0, 0.253) !important ;
+    /* background-color:rgb(235, 226, 145); */
 }
+
 
 .root{
     padding-left: 20px;
     padding-right: 20px;
+    /* background-color: black; */
 }
 
 

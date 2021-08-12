@@ -4,7 +4,8 @@ import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { NavigationBar } from './NavigationBar';
+// import  {NavigationBar}  from './NavigationBar';
+import  NavigationBar  from './NavigationBar';
 
 
 import  Profile  from './Profile//Profile.js';

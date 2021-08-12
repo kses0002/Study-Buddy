@@ -17,7 +17,7 @@
 
 .toppane {
     /* width: 100%; */
-    background: bisque;
+    background: rgb(255, 228, 196);
     flex:3;
     
     
@@ -25,7 +25,7 @@
 
 .middlepane {
     /* width: 100%; */
-    background: papayawhip;
+    background: #FCEA97;
     flex:3;
     overflow-y: scroll;
     

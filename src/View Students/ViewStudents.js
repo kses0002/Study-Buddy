@@ -30,7 +30,7 @@ export default class ViewStudents extends React.Component {
             pageNumber: 0
         }
 
-        this.usersPerPage = 5
+        this.usersPerPage = 10
         this.pageCount = 0;
         this.pagesVisited=0;
 

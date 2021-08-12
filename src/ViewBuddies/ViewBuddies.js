@@ -4,7 +4,6 @@ import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
 import Chat from './Chat'
-import Test1 from './test1'
 import './ViewBuddies.css'
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';

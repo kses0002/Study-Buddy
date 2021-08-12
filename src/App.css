@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 } */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
+
+* {
+  font-family: 'Sora', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+}
+
+:root {
+
+  /* Colors */
+
+  /* --light-blue: #00a1c9; */
+  --button-color: var(--light-blue);
+  --button-background-color: var(--light-blue);
+  --button-click: var(--darkAmazonOrange);
+  --link-color: var(--amazonOrange);
+  --form-color: var(--white);
+  --input-color: var(--deepSquidInk);
+  --input-background-color: var(--white);
+  }

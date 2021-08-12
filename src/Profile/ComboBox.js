@@ -46,7 +46,7 @@ export default function ComboBox({data, onChildClick}) {
             {...params}
             variant="standard"
             label="Units"
-            placeholder="Units"
+            placeholder="Add Units"
           />
         )}
       />
