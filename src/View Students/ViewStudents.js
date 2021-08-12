@@ -16,6 +16,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import './ViewStudents.css';
 import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
+// import { MuiThemeProvider, createMuiTheme } from '@material-ui/styles'
+
+// const redTheme = createMuiTheme({ palette: { primary: 'red' } })
 
 export default class ViewStudents extends React.Component {
     constructor() {
@@ -32,8 +35,9 @@ export default class ViewStudents extends React.Component {
 
         this.usersPerPage = 10
         this.pageCount = 0;
-        this.pagesVisited=0;
+        this.pagesVisited = 0;
 
+        this.cardHeader=["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4"]
 
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
@@ -156,13 +160,13 @@ export default class ViewStudents extends React.Component {
     }
 
     render(props) {
-        this.pagesVisited = (this.state.pageNumber-1) * this.usersPerPage
-        
-        if(this.pagesVisited<0){
-            this.pagesVisited=0
+        this.pagesVisited = (this.state.pageNumber - 1) * this.usersPerPage
+
+        if (this.pagesVisited < 0) {
+            this.pagesVisited = 0
         }
-      
-        
+
+
         return (
             <div className="root">
                 <div>
@@ -176,30 +180,42 @@ export default class ViewStudents extends React.Component {
 
                 <br></br>
                 <br></br>
-                <Grid container spacing={4} justifyContent="center">
+                <Grid container spacing={4} justifyContent="center" >
                     {console.log(this.state.searchlist)}
-                    {this.state.searchlist.slice(this.pagesVisited,this.pagesVisited+ this.usersPerPage).map(card => (
+                    {this.state.searchlist.slice(this.pagesVisited, this.pagesVisited + this.usersPerPage).map((card, index) => (
                         <Grid item xs={12} sm={6} md={3}  >
                             <Card className="card" >
                                 <CardHeader
-                                    title={card.firstName}
-                                    subheader={card.degree}
+                                    className={this.cardHeader[index % this.cardHeader.length]}
+                                    title={<Typography variant="h6">{card.firstName}</Typography>}
+                                    subheader={<Typography style={{color: "#cccccc"}}variant="body2" >{card.degree}</Typography>}
                                     avatar={
                                         <Avatar aria-label="recipe" >
                                             {card.firstName[0]}
                                         </Avatar>
                                     }
                                 />
-                                <CardContent>
+                                <CardContent className="cardContent">
                                     Units: {card.units.map((item) =>
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
-                                    <br></br>
+                                </CardContent>
+                                <CardContent>
                                     Study Mode: {card.studyMode.map((item) =>
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
                                 </CardContent>
+                                {/* <Grid container spacing={3} justifyContent="flex-start" > */}
                                 <CardActions>
-                                    <Button size="small" onClick={() => this.handleAddBuddy(card)}>Add</Button>
-                                    <Button size="small">Dismiss</Button>
+                                    {/* <Grid item xs={12} sm={6} md={6} alignItems="flex-end"> */}
+                                    <Button variant="contained" style={{
+                                        backgroundColor: "#0C1115",
+                                        color: 'white'
+                                    }} size="small" onClick={() => this.handleAddBuddy(card)}>Add</Button>
+                                    <Button size="small" style={{
+                                        backgroundColor: "#BE2F29",
+                                        color: 'white'
+                                    }}>Dismiss</Button>
+                                    {/* </Grid> */}
+                                    {/* <Grid item xs={12} sm={6} md={12} alignItems="flex-end"> */}
                                     <IconButton
                                         onClick={() => this.handleExpandClick(card.email)}
                                         aria-expanded={this.state.expanded}
@@ -207,7 +223,10 @@ export default class ViewStudents extends React.Component {
                                     >
                                         <ExpandMoreIcon />
                                     </IconButton>
+                                    {/* </Grid> */}
                                 </CardActions>
+
+                                {/* </Grid> */}
                                 <Collapse in={card.email == this.state.expandEmail} timeout="auto" unmountOnExit>
                                     <CardContent>
                                         <Typography paragraph>About {card.firstName}:</Typography>
@@ -234,7 +253,7 @@ export default class ViewStudents extends React.Component {
 /*
 Tom
 ERin
-Olivia 
+Olivia
 
 Keshav
 Momo Adam

@@ -3,15 +3,61 @@
 } */
 
 .card{
-    color:red;
+  height: 100%;
+  /* height:25rem; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
+
+.cardHeader1{
+    background-color: #1A2C42;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+.cardHeader2{
+    background-color:#361999;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+.cardHeader3{
+    background-color: #490B3D;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+.cardHeader4{
+    background-color: #FAE62D;
+    /* background-color: #1A2C42; */
+    color: white;
+    
+}
+
+#addButton{
+    background-color: red;
+    color: red;
+}
+
 
 .card:hover{
     box-shadow: 5px 10px 20px 1px rgba(0, 0, 0, 0.253) !important ;
     /* background-color:rgb(235, 226, 145); */
 }
 
+.cardContent {
+    /* background-color: red; */
+}
 
+.test{
+    color: red;
+    background-color: red;
+    flood-color: red;;
+}
 .root{
     padding-left: 20px;
     padding-right: 20px;
