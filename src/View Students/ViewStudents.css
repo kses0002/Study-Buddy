@@ -1,68 +1,72 @@
-/* body{
-    background: radial-gradient(#e5e5e5,#ffff,#e5e5e5);
-} */
-
 .card{
-  height: 100%;
+  min-height: 400px;
   /* height:25rem; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
+.avatar1{
+    color: #00ABE1;
+    border-radius:100%;
+    border: "solid";
+    border-width: 0.0px;
+    border-color: black;
+    background-color: white;
+}
+
+.searchBar{
+    margin-top: 2rem;
+    width:30%;
+    height:2.3rem;
+}
+
+.cardHeader{
+    background-color: #1A2C42;
+    color: white;
+    
+}
+
 .cardHeader1{
-    background-color: #F7CE76;
-    /* background-color: #1A2C42; */
+    background-color: #00ABE1;
     color: white;
     
 }
 
 .cardHeader2{
-    background-color:#2CCED2;
-    /* background-color: #1A2C42; */
+    background-color:#E5B9A8;
     color: white;
     
 }
 
 .cardHeader3{
-    background-color: #F27348;
-    /* background-color: #1A2C42; */
+    background-color: #9CF6FB;
     color: white;
     
 }
 
 .cardHeader4{
-    background-color: #F9968B;
-    /* background-color: #1A2C42; */
+    background-color: #1FC58E;
     color: white;
     
 }
 
 .cardHeader5{
-    background-color: #9AD9DB;
-    /* background-color: #1A2C42; */
+    background-color: #F8DD2E;
     color: white;
     
 }
 
 .cardHeader6{
-    background-color: #E4CEE0;
-    /* background-color: #1A2C42; */
+    background-color: #FAB162;
     color: white;
     
 }
 
 .cardHeader7{
     background-color: #FF6495;
-    /* background-color: #1A2C42; */
     color: white;
     
-}
-
-
-#addButton{
-    background-color: red;
-    color: red;
 }
 
 
@@ -71,15 +75,6 @@
     /* background-color:rgb(235, 226, 145); */
 }
 
-.cardContent {
-    /* background-color: red; */
-}
-
-.test{
-    color: red;
-    background-color: red;
-    flood-color: red;;
-}
 .root{
     padding-left: 20px;
     padding-right: 20px;

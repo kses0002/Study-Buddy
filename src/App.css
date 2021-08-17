@@ -60,3 +60,7 @@
   --input-color: var(--deepSquidInk);
   --input-background-color: var(--white);
   }
+
+  .root {
+    background-color: whitesmoke;
+  }

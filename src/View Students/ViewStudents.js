@@ -37,7 +37,8 @@ export default class ViewStudents extends React.Component {
         this.pageCount = 0;
         this.pagesVisited = 0;
 
-        this.cardHeader=["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4", "cardHeader5", "cardHeader6", "cardHeader7"]
+        this.cardHeader = ["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4", "cardHeader5", "cardHeader6", "cardHeader7"]
+        this.cardColor = ["#00ABE1", "#E5B9A8", "#9CF6FB", "#1FC58E", "#F8DD2E", "#FAB162", "#FF6495"]
 
         this.handleSearchQuery = this.handleSearchQuery.bind(this);
         this.updateState = this.updateState.bind(this);
@@ -169,15 +170,15 @@ export default class ViewStudents extends React.Component {
 
         return (
             <div className="root">
-                <div>
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        value={this.state.searchTerm}
-                        onChange={this.handleSearchQuery}
-                    />
-                </div>
-
+                <Grid container spacing={1} justifyContent="center" alignItems="center" direction="row" >
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={this.state.searchTerm}
+                            onChange={this.handleSearchQuery}
+                            className="searchBar"
+                        />
+                </Grid> 
                 <br></br>
                 <br></br>
                 <Grid container spacing={4} justifyContent="center" >
@@ -186,11 +187,19 @@ export default class ViewStudents extends React.Component {
                         <Grid item xs={12} sm={6} md={3}  >
                             <Card className="card" >
                                 <CardHeader
+                                    // className="cardHeader"
+                                    // title={<Typography variant="h6" style={{ color: "white" }}>{card.firstName}</Typography>}
+                                    // subheader={<Typography style={{ color: "white" }} variant="body2" >{card.degree}</Typography>}
                                     className={this.cardHeader[index % this.cardHeader.length]}
-                                    title={<Typography variant="h6" style={{color: "black"}}>{card.firstName}</Typography>}
-                                    subheader={<Typography style={{color: "black"}}variant="body2" >{card.degree}</Typography>}
+                                    title={<Typography variant="h6" style={{ color: "black" }}>{card.firstName}</Typography>}
+                                    subheader={<Typography style={{ color: "black" }} variant="body2" >{card.degree}</Typography>}
                                     avatar={
-                                        <Avatar aria-label="recipe" >
+                                        <Avatar aria-label="recipe" style={{
+                                            color: this.cardColor[index % this.cardColor.length],
+                                            borderRadius: "100%",
+                                            border: "solid",
+                                            borderWidth: "0.0px", borderColor: "black", backgroundColor: "white"
+                                        }}>
                                             {card.firstName[0]}
                                         </Avatar>
                                     }
