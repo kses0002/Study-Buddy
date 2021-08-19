@@ -13,9 +13,13 @@ import Grid from '@material-ui/core/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
 import Popover from '@material-ui/core/Popover';
 import Icon from '@material-ui/core/Icon';
+import { Scrollbars } from 'react-custom-scrollbars';
 import InfoIcon from '@material-ui/icons/Info';
+import CardActionArea from '@material-ui/core/CardActionArea';
+
 
 class ViewBuddies extends React.Component {
     constructor() {
@@ -25,16 +29,19 @@ class ViewBuddies extends React.Component {
             myBuddies: [],
             anchorE1: null,
             expandedBuddy: "",
-            messageRecipient: null
+            messageRecipient: null,
+            cardActive:""
         }
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
 
+        this.cardColor = ["#00ABE1", "#E5B9A8", "#9CF6FB", "#1FC58E", "#F8DD2E", "#FAB162", "#FF6495"]
     }
 
     componentWillMount() {
+        
         Auth.currentAuthenticatedUser().then((user) => {
 
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
@@ -75,8 +82,8 @@ class ViewBuddies extends React.Component {
         this.setState({ ...this.state, expandedBuddy: null });
     };
 
-    handleCardClick(reciepientEmail) {
-        this.setState({ ...this.state, messageRecipient: reciepientEmail })
+    handleCardClick(reciepientEmail, cardId) {
+        this.setState({ ...this.state, messageRecipient: reciepientEmail, cardActive:cardId })
     }
 
     render(props) {
@@ -85,51 +92,63 @@ class ViewBuddies extends React.Component {
             <div className="splitscreen">
                 <div className="leftList">
                     <div className="middlepane">
-                        <h1>Friends</h1>
-                        {this.state.myBuddies.map(buddies => (
-                            <div>
-                                <Grid container spacing={2} justifyContent="center" >
-                                    <Grid item xs={12}   >
-                                        <Card className="Card">
-                                            <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email)}>
-                                                {buddies.firstName}
-                                            </CardContent>
-                                            <CardActions className="CardAction">
-                                                <IconButton color="primary" onClick={(e) => this.handleClick(e, buddies.email)}>
-                                                    <InfoIcon></InfoIcon>
-                                                </IconButton>
-                                                <Popover
-                                                    getContentAnchorEl={null}
-                                                    open={this.state.expandedBuddy == buddies.email}
-                                                    anchorEl={this.state.anchorE1}
-                                                    onClose={this.handleClose}
-                                                    anchorOrigin={{
-                                                        vertical: 'bottom',
-                                                        horizontal: 'center',
-                                                    }}
-                                                    transformOrigin={{
-                                                        vertical: 'top',
-                                                        horizontal: 'center',
-                                                    }}
-                                                >
-                                                    <div>
-                                                        Units: {buddies.units.map((item) =>
-                                                            <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                        <br></br>
-                                                        Study Mode: {buddies.studyMode.map((item) =>
-                                                            <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                        <br></br>
-                                                        <Typography paragraph>
-                                                            About me: {buddies.aboutMe}
-                                                        </Typography>
-                                                    </div>
-                                                </Popover>
-                                            </CardActions>
-                                        </Card>
+                        <Scrollbars>
+                            {this.state.myBuddies.map((buddies, index) => (
+                                <div>
+                                    <Grid container spacing={0} justifyContent="center" >
+                                        <Grid item xs={12}   >
+                                            <Card className={this.state.cardActive===index ?"cardActive" :"BuddyCard"}>
+                                                <CardHeader
+                                                    avatar={<Avatar aria-label="recipe" style={{
+                                                        color: 'white',
+                                                        borderRadius: "100%",
+                                                        border: "solid",
+                                                        borderWidth: "0.0px", borderColor: "black",
+                                                        backgroundColor: this.cardColor[index % this.cardColor.length]
+                                                    }}>
+                                                        {buddies.firstName[0]}
+                                                    </Avatar>}
+                                                />
+                                                <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email, index)}>
+                                                    {buddies.firstName}
+                                                </CardContent>
+                                                <CardActions className="CardAction">
+                                                    <IconButton color="primary" onClick={(e) => this.handleClick(e, buddies.email)}>
+                                                        <InfoIcon></InfoIcon>
+                                                    </IconButton>
+                                                    <Popover
+                                                        getContentAnchorEl={null}
+                                                        open={this.state.expandedBuddy == buddies.email}
+                                                        anchorEl={this.state.anchorE1}
+                                                        onClose={this.handleClose}
+                                                        anchorOrigin={{
+                                                            vertical: 'bottom',
+                                                            horizontal: 'center',
+                                                        }}
+                                                        transformOrigin={{
+                                                            vertical: 'top',
+                                                            horizontal: 'center',
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            Units: {buddies.units.map((item) =>
+                                                                <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
+                                                            <br></br>
+                                                            Study Mode: {buddies.studyMode.map((item) =>
+                                                                <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
+                                                            <br></br>
+                                                            <Typography paragraph>
+                                                                About me: {buddies.aboutMe}
+                                                            </Typography>
+                                                        </div>
+                                                    </Popover>
+                                                </CardActions>
+                                            </Card>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </div>
-                        ))}
+                                </div>
+                            ))}
+                        </Scrollbars>
                     </div>
                 </div>
                 <div className="rightChat">

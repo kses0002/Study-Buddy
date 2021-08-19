@@ -6,6 +6,7 @@ import { messagesByChannelID } from '../graphql/queries';
 import { createMessage } from '../graphql/mutations';
 import { onCreateMessage } from '../graphql/subscriptions'
 import './Chat.css'
+import { Scrollbars } from 'react-custom-scrollbars';
 
 function Chat({ data, currentUserEmail }) {
 
@@ -13,13 +14,13 @@ function Chat({ data, currentUserEmail }) {
     const [messageBody, setMessageBody] = useState('');
     const [userInfo, setUserInfo] = useState(null)
     const [recipientEmail = data, setRecipientEmail, emailRef] = useState()
-    
+
     useEffect(() => {
         setRecipientEmail(data.emailRef)
     }, [data])
     console.log(recipientEmail)
 
-   
+
 
     useEffect(() => {
         Auth.currentUserInfo().then((userInfo) => {
@@ -85,17 +86,28 @@ function Chat({ data, currentUserEmail }) {
         }
     };
 
+    const AlwaysScrollToBottom = () => {
+        const elementRef = React.createRef();
+        useEffect(() => elementRef.current.scrollIntoView());
+        return <div ref={elementRef} />;
+      };
+
     return (
         <div className="container">
-            <div className="messages">
-                <div className="messages-scroller">
-                    {messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={message.author === userInfo?.attributes?.email ? 'message me' : 'message'}>{message.body}</div>
-                    ))}
+                <div className="messages">
+                    <div className="messages-scroller">
+                        {messages.map((message) => (
+
+                            <div
+                                key={message.id}
+                                className={message.author === userInfo?.attributes?.email ? 'message me' : 'message'}>{message.body}
+                            </div>
+
+                        ))}
+                         <AlwaysScrollToBottom />
+                    </div>
                 </div>
-            </div>
+            
             <div className="chat-bar">
                 <form onSubmit={handleSubmit}>
                     <input

@@ -18,10 +18,10 @@ const Navigationbar = () => {
         <Bars onClick={console.log("CLOCK")} />
         <NavMenu>
           <NavLink to='/ViewStudents' activeStyle>
-            View Students
+            Add Buddies
           </NavLink>
           <NavLink to='/ViewBuddies' activeStyle>
-            Buddies
+            Your Buddies
           </NavLink>
           <NavLink to='/FriendRequest' activeStyle>
             Buddy Requests

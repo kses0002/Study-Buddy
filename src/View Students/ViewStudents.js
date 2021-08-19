@@ -222,7 +222,7 @@ export default class ViewStudents extends React.Component {
                                     <Button size="small" style={{
                                         backgroundColor: "#BE2F29",
                                         color: 'white'
-                                    }}>Dismiss</Button>
+                                    }}>Ignore</Button>
                                     {/* </Grid> */}
                                     {/* <Grid item xs={12} sm={6} md={12} alignItems="flex-end"> */}
                                     <IconButton

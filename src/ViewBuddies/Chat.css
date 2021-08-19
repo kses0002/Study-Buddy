@@ -1,6 +1,8 @@
 * {
     box-sizing: border-box;
   }
+
+  
   
   html, body {
     height: 100%;
@@ -45,16 +47,36 @@
     align-self: flex-start;
     margin-top: 4px;
     padding: 8px 12px;
-    max-width: 240px;
+    max-width: 55vw;
     background: #f1f0f0;
     border-radius: 16px;
     font-size: 14px;
+
+    overflow-wrap:break-word;
+    /* display: inline-block; */
+    /* word-wrap: break-word; */
+    /* word-break: break-word; */
+    /* word-break:break-all; */
+    /* -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto; */
   }
   
   .message.me {
     align-self: flex-end;
     background: #FFC003;
     color: black;
+
+    overflow-wrap:break-word;
+    /* display: inline-block; */
+    /* word-wrap: break-word; */
+    /* word-break: break-word; */
+    /* width:500rem; */
+    /* -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto; */
   }
   
   .chat-bar {

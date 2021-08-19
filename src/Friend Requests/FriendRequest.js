@@ -117,11 +117,12 @@ class FriendRequest extends React.Component {
                 {this.state.potentialBuddies.map((buddies, index) => (
                     <Grid container spacing={2} justifyContent="center">
                         <Grid item xs={8}   >
-                            <Card className="BuddyCards">
+                            <Card className="BuddyRequestCards">
                                 <CardHeader
-                                    className="cardHeader"
-                                    // className={this.cardHeader[index % this.cardHeader.length]}
-                                    title={buddies.firstName + ": " + buddies.degree}
+                                    // className="cardHeader"
+                                    className={this.cardHeader[index % this.cardHeader.length]}
+                                    title={<Typography variant="h5" style={{ color: "black" }}>{buddies.firstName + ": " + buddies.degree}</Typography>}
+                                    // title={buddies.firstName + ": " + buddies.degree}
                                 // subheader={buddies.degree}
                                 />
                                 <CardContent className="cardBody">
@@ -148,7 +149,7 @@ class FriendRequest extends React.Component {
                                             <Button size="small" style={{
                                                 backgroundColor: "#BE2F29",
                                                 color: 'white'
-                                            }}>Dismiss</Button>
+                                            }}>Ignore</Button>
                                         </Grid>
                                     </Grid>
                                 </CardActions>
