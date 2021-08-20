@@ -7,6 +7,7 @@ import { createMessage } from '../graphql/mutations';
 import { onCreateMessage } from '../graphql/subscriptions'
 import './Chat.css'
 import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScrollReverse from "react-infinite-scroll-reverse";
 
 function Chat({ data, currentUserEmail }) {
 
@@ -17,7 +18,14 @@ function Chat({ data, currentUserEmail }) {
 
     const [page, setPage] = useState(1);
     const [token, setToken] = useState("");
- 
+    const [currentScrollTop, setCurrentScrollTop] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const messagesEndRef = useRef(null)
+    const messageRef = useRef(null)
+
+
     useEffect(() => {
         setRecipientEmail(data.emailRef)
     }, [data])
@@ -27,6 +35,7 @@ function Chat({ data, currentUserEmail }) {
         Auth.currentUserInfo().then((userInfo) => {
             setUserInfo(userInfo)
         })
+        // messageRef=React.createRef();
     }, [])
 
     useEffect(() => {
@@ -34,7 +43,8 @@ function Chat({ data, currentUserEmail }) {
         API
             .graphql(graphqlOperation(messagesByChannelID, {
                 channelID: '1',
-                sortDirection: 'DESC'
+                sortDirection: 'DESC',
+                limit: 20
             }))
             .then((response) => {
                 let loadMore = response?.data?.messagesByChannelID?.nextToken
@@ -42,7 +52,8 @@ function Chat({ data, currentUserEmail }) {
 
                 const items = response?.data?.messagesByChannelID?.items;
 
-                for (let i = items.length - 1; i >= 0; i--) {
+                // for (let i = items.length - 1; i >= 0; i--) {
+                for (let i = 0; i < items.length; i++) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
                             && items[i].author == recipientEmail)) {
@@ -51,8 +62,52 @@ function Chat({ data, currentUserEmail }) {
 
                     }
                 }
+                // setMessages(oldItems => oldItems.reverse())
+                // messages.map((message) => (
+                //     console.log(message.body)
+                // ))
             })
     }, [data]);
+
+    useEffect(() => {
+        const loadUsers = async () => {
+            setLoading(true);
+
+            API
+                .graphql(graphqlOperation(messagesByChannelID, {
+                    channelID: '1',
+                    sortDirection: 'DESC',
+                    limit: 20,
+                    nextToken: token
+
+                }))
+                .then((response) => {
+                    let loadMore = response?.data?.messagesByChannelID?.nextToken
+                    setToken(loadMore)
+
+                    const items = response?.data?.messagesByChannelID?.items;
+
+                    for (let i = 0; i < items.length; i++) {
+                        if ((items[i].author == currentUserEmail
+                            && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
+                                && items[i].author == recipientEmail)) {
+
+                            setMessages(oldItems => [...oldItems, items[i]])
+
+                        }
+                    }
+                })
+            const element = document.getElementById(messageRef);
+            // console.log(element)
+            console.log(element.scrollTop)
+            element.scrollTo(0,650)
+            setLoading(false);
+        };
+
+        loadUsers();
+
+
+    }, [page]);
 
     useEffect(() => {
 
@@ -95,99 +150,46 @@ function Chat({ data, currentUserEmail }) {
     const AlwaysScrollToBottom = () => {
         const elementRef = React.createRef();
         useEffect(() => elementRef.current.scrollIntoView());
-        if(page>1){
-            window.scrollTo(0, 0)
-            return <div ref={elementRef} />;
-        }
-        else{
-        return <div ref={elementRef} />;
-        }
         return <div ref={elementRef} />;
     };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-      }
-
-    const messagesEndRef = useRef(null)
-
-    useEffect(() =>{
-        scrollToBottom()
-    },[])
-
-    // useEffect(() => {
-    //     window.addEventListener('scroll', handleScroll);
-    //     return () => window.removeEventListener('scroll', handleScroll);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!isFetching) return;
-    //     fetchMoreListItems();
-    // }, [isFetching]);
-
-    // const handleScroll = () => {
-    //     if (window.innerHeight + document.documentElement.scrollTop + 5=== document.scrollingElement.scrollHeight) 
-    //     return;
-    //     console.log('Fetch more list items!');
-    //     setIsFetching(true);
-    // }
-
-    // function fetchMoreListItems() {
-    //     console.log(1+1)
-    //   }
-
-    function loadMoreMessages() {
-        if (token != null) {
-            API
-                .graphql(graphqlOperation(messagesByChannelID, {
-                    channelID: '1',
-                    sortDirection: 'DESC',
-                    nextToken: token
-                }))
-                .then((response) => {
-                    let loadMore = response?.data?.messagesByChannelID?.nextToken
-                    setToken(loadMore)
-                    console.log(loadMore)
-
-                    const items = response?.data?.messagesByChannelID?.items;
-
-                    for (let i = items.length - 1; i >= 0; i--) {
-                        if ((items[i].author == currentUserEmail
-                            && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
-                                && items[i].author == recipientEmail)) {
-
-                            // console.log(items[i])
-                            // setMessages(oldItems => [...oldItems, items[i]])
-
-                        }
-                    }
-                })
-        }
-       
     }
+
+
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
 
 
     const handleScroll = (event) => {
         const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+
+        const element = document.getElementById(messageRef);
+            // console.log(element)
+            console.log(element.scrollTop)
 
         // console.log("ScrollTop: "+scrollTop)
         // console.log("clientHeight: "+clientHeight)
         // console.log("scrollHeight: "+scrollHeight)
         // console.log("")
         // if (scrollHeight - scrollTop === clientHeight && token!=null) {
-        if (scrollTop === 0 && token!=null) {
+        if (scrollTop === 0 && token != null) {
             setPage(prev => prev + 1);
         }
     }
 
-    useEffect(() => {
-        const loadUsers = async () => {
 
-
+    function getItems() {
+        setIsLoading(true);
+        if (token != null) {
             API
                 .graphql(graphqlOperation(messagesByChannelID, {
                     channelID: '1',
                     sortDirection: 'DESC',
+                    limit: 30,
                     nextToken: token
 
                 }))
@@ -197,59 +199,54 @@ function Chat({ data, currentUserEmail }) {
 
                     const items = response?.data?.messagesByChannelID?.items;
 
-                    for (let i = 0; i <items.length; i++) {
+                    for (let i = 0; i < items.length; i++) {
                         if ((items[i].author == currentUserEmail
                             && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
                                 && items[i].author == recipientEmail)) {
 
-                            setMessages(oldItems => [items[i], ...oldItems])
+                            setMessages(oldItems => [...oldItems, items[i]])
 
                         }
                     }
                 })
-        };
-
-        loadUsers();
-        
-    }, [page]);
+        }
+        setIsLoading(false);
+    }
 
     return (
         <div className="container">
-            <div className="messages">
+            <div className="messages" >
                 {/* {console.log(messages)} */}
-                <div className="messages-scroller" onScroll={handleScroll}>
-                    {messages.map((message) => (
-
+                <div className="messages-scroller" onScroll={handleScroll} id={messageRef}>
+                    {/* {messages.map((message) => ( */}
+                    {loading && <div>Loading ...</div>}
+                    {[].concat(messages).reverse().map((message) => (
                         <div
                             key={message.id}
                             className={message.author === userInfo?.attributes?.email ? 'message me' : 'message'}>{message.body}
                         </div>
-
                     ))}
-                      <AlwaysScrollToBottom />
-                      {/* <div ref={messagesEndRef} /> */}
 
-                    {/* <InfiniteScroll
+                    {/* <AlwaysScrollToBottom /> */}
+
+                    {/* <div ref={messagesEndRef} /> */}
+
+                    {/* <InfiniteScrollReverse
                         className="messages-scroller"
-                        pageStart={0}
-                        // initialLoad={false}
-                        // isReverse={true}
-                        loadMore={loadMoreMessages}
-                        // hasMore={isFetching}
-                        loader={<div className="loader" key={0}>Loading ...</div>}
+                        hasMore={true}
+                        // hasMore={(token!=null) ? true : false}
+                        isLoading={isLoading}
+                        loadMore={getItems}
+                        loadArea={30}
                     >
-                        {messages.map((message) => (
 
+                        {[].concat(messages).reverse().map((message) => (
                             <div
                                 key={message.id}
                                 className={message.author === userInfo?.attributes?.email ? 'message me' : 'message'}>{message.body}
                             </div>
-
                         ))}
-                      
-                    </InfiniteScroll> */}
-
-
+                    </InfiniteScrollReverse> */}
                 </div>
             </div>
 

@@ -42,6 +42,10 @@
     padding: 16px;
     overflow-y: scroll;
     overflow-anchor:none ;
+    /* overscroll-behavior-y:contain; */
+    /* overflow-block:initial ; */
+    /* overflow-anchor:initial; */
+     
   }
   
   .message {
