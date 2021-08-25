@@ -6,8 +6,7 @@ import { messagesByChannelID } from '../graphql/queries';
 import { createMessage } from '../graphql/mutations';
 import { onCreateMessage } from '../graphql/subscriptions'
 import './Chat.css'
-import InfiniteScroll from 'react-infinite-scroller';
-import InfiniteScrollReverse from "react-infinite-scroll-reverse";
+
 
 function Chat({ data, currentUserEmail }) {
 
@@ -49,29 +48,41 @@ function Chat({ data, currentUserEmail }) {
             .then((response) => {
                 let loadMore = response?.data?.messagesByChannelID?.nextToken
                 setToken(loadMore)
-
+                
                 const items = response?.data?.messagesByChannelID?.items;
 
                 // for (let i = items.length - 1; i >= 0; i--) {
+                    console.log(currentUserEmail)
+                    console.log(recipientEmail)
+                    // console.log(items)
                 for (let i = 0; i < items.length; i++) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
                             && items[i].author == recipientEmail)) {
+                                console.log(items)
 
                         setMessages(oldItems => [...oldItems, items[i]])
 
                     }
                 }
+                // console.log(messages)
                 // setMessages(oldItems => oldItems.reverse())
-                // messages.map((message) => (
-                //     console.log(message.body)
-                // ))
+                items.map((message) => (
+                    console.log(message.body)
+                ))
             })
     }, [data]);
 
     useEffect(() => {
         const loadUsers = async () => {
             setLoading(true);
+            const element = document.getElementById(messageRef);
+            // console.log(element.scrollTop)
+           
+            // element.scrollBy(0,element.scrollHeight+200-(element.scrollHeight/2 - element.clientHeight))
+            element.scrollTo(0,860)
+            setLoading(false);
+        };
 
             API
                 .graphql(graphqlOperation(messagesByChannelID, {
@@ -97,12 +108,7 @@ function Chat({ data, currentUserEmail }) {
                         }
                     }
                 })
-            const element = document.getElementById(messageRef);
-            // console.log(element)
-            console.log(element.scrollTop)
-            element.scrollTo(0,650)
-            setLoading(false);
-        };
+            
 
         loadUsers();
 
@@ -115,7 +121,7 @@ function Chat({ data, currentUserEmail }) {
             .graphql(graphqlOperation(onCreateMessage))
             .subscribe({
                 next: (event) => {
-                    setMessages([...messages, event.value.data.onCreateMessage]);
+                    setMessages([event.value.data.onCreateMessage,...messages]);
                 }
             });
 
@@ -169,48 +175,21 @@ function Chat({ data, currentUserEmail }) {
 
         const element = document.getElementById(messageRef);
             // console.log(element)
+            // console.log(element.scrollHeight)
             console.log(element.scrollTop)
+            // console.log(element.scrollHeight-(element.scrollHeight/2 - element.clientHeight))
 
+            // console.log(event.currentTarget)
         // console.log("ScrollTop: "+scrollTop)
         // console.log("clientHeight: "+clientHeight)
         // console.log("scrollHeight: "+scrollHeight)
         // console.log("")
         // if (scrollHeight - scrollTop === clientHeight && token!=null) {
+            // console.log("Page: "+page)
         if (scrollTop === 0 && token != null) {
+            // console.log(token)
             setPage(prev => prev + 1);
         }
-    }
-
-
-    function getItems() {
-        setIsLoading(true);
-        if (token != null) {
-            API
-                .graphql(graphqlOperation(messagesByChannelID, {
-                    channelID: '1',
-                    sortDirection: 'DESC',
-                    limit: 30,
-                    nextToken: token
-
-                }))
-                .then((response) => {
-                    let loadMore = response?.data?.messagesByChannelID?.nextToken
-                    setToken(loadMore)
-
-                    const items = response?.data?.messagesByChannelID?.items;
-
-                    for (let i = 0; i < items.length; i++) {
-                        if ((items[i].author == currentUserEmail
-                            && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
-                                && items[i].author == recipientEmail)) {
-
-                            setMessages(oldItems => [...oldItems, items[i]])
-
-                        }
-                    }
-                })
-        }
-        setIsLoading(false);
     }
 
     return (
@@ -227,26 +206,10 @@ function Chat({ data, currentUserEmail }) {
                         </div>
                     ))}
 
-                    {/* <AlwaysScrollToBottom /> */}
+                    <AlwaysScrollToBottom />
 
                     {/* <div ref={messagesEndRef} /> */}
 
-                    {/* <InfiniteScrollReverse
-                        className="messages-scroller"
-                        hasMore={true}
-                        // hasMore={(token!=null) ? true : false}
-                        isLoading={isLoading}
-                        loadMore={getItems}
-                        loadArea={30}
-                    >
-
-                        {[].concat(messages).reverse().map((message) => (
-                            <div
-                                key={message.id}
-                                className={message.author === userInfo?.attributes?.email ? 'message me' : 'message'}>{message.body}
-                            </div>
-                        ))}
-                    </InfiniteScrollReverse> */}
                 </div>
             </div>
 
@@ -267,3 +230,4 @@ function Chat({ data, currentUserEmail }) {
 };
 
 export default Chat;
+

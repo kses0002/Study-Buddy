@@ -4,6 +4,7 @@ import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
 import Chat from './Chat'
+import ChatHeader from'./ChatHeader'
 import './ViewBuddies.css'
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -30,7 +31,9 @@ class ViewBuddies extends React.Component {
             anchorE1: null,
             expandedBuddy: "",
             messageRecipient: null,
-            cardActive:""
+            cardActive: "",
+            messageRecipientName:"",
+            messageRecipientColor:""
         }
 
         this.handleClick = this.handleClick.bind(this);
@@ -41,7 +44,7 @@ class ViewBuddies extends React.Component {
     }
 
     componentWillMount() {
-        
+
         Auth.currentAuthenticatedUser().then((user) => {
 
             API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
@@ -82,8 +85,11 @@ class ViewBuddies extends React.Component {
         this.setState({ ...this.state, expandedBuddy: null });
     };
 
-    handleCardClick(reciepientEmail, cardId) {
-        this.setState({ ...this.state, messageRecipient: reciepientEmail, cardActive:cardId })
+    handleCardClick(reciepientEmail, recipientName, cardId) {
+        this.setState({ ...this.state, messageRecipient: reciepientEmail, 
+            cardActive: cardId,
+             messageRecipientName: recipientName,
+              messageRecipientColor: this.cardColor[cardId % this.cardColor.length]})
     }
 
     render(props) {
@@ -97,7 +103,7 @@ class ViewBuddies extends React.Component {
                                 <div>
                                     <Grid container spacing={0} justifyContent="center" >
                                         <Grid item xs={12}   >
-                                            <Card className={this.state.cardActive===index ?"cardActive" :"BuddyCard"}>
+                                            <Card className={this.state.cardActive === index ? "cardActive" : "BuddyCard"}>
                                                 <CardHeader
                                                     avatar={<Avatar aria-label="recipe" style={{
                                                         color: 'white',
@@ -109,7 +115,8 @@ class ViewBuddies extends React.Component {
                                                         {buddies.firstName[0]}
                                                     </Avatar>}
                                                 />
-                                                <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email, index)}>
+                                                {/* {this.setState({...this.state, messageRecipientColor:this.cardColor[index % this.cardColor.length]})} */}
+                                                <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email, buddies.firstName, index)}>
                                                     {buddies.firstName}
                                                 </CardContent>
                                                 <CardActions className="CardAction">
@@ -153,10 +160,18 @@ class ViewBuddies extends React.Component {
                 </div>
                 <div className="rightChat">
                     <div className="bottompane">
+                        
+                   
+                    {this.state.messageRecipient != null && this.state.messageRecipient != undefined
+                            ?  <ChatHeader buddyName={this.state.messageRecipientName} buddyColor={this.state.messageRecipientColor}></ChatHeader>
+                            : <div></div>
+                        }
+                        
                         {this.state.messageRecipient != null && this.state.messageRecipient != undefined
                             ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email} />
                             : <div></div>
                         }
+                    
                     </div>
                 </div>
             </div>

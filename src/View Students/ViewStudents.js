@@ -187,9 +187,6 @@ export default class ViewStudents extends React.Component {
                         <Grid item xs={12} sm={6} md={3}  >
                             <Card className="card" >
                                 <CardHeader
-                                    // className="cardHeader"
-                                    // title={<Typography variant="h6" style={{ color: "white" }}>{card.firstName}</Typography>}
-                                    // subheader={<Typography style={{ color: "white" }} variant="body2" >{card.degree}</Typography>}
                                     className={this.cardHeader[index % this.cardHeader.length]}
                                     title={<Typography variant="h6" style={{ color: "black" }}>{card.firstName}</Typography>}
                                     subheader={<Typography style={{ color: "black" }} variant="body2" >{card.degree}</Typography>}
@@ -212,9 +209,7 @@ export default class ViewStudents extends React.Component {
                                     Study Mode: {card.studyMode.map((item) =>
                                         <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
                                 </CardContent>
-                                {/* <Grid container spacing={3} justifyContent="flex-start" > */}
                                 <CardActions>
-                                    {/* <Grid item xs={12} sm={6} md={6} alignItems="flex-end"> */}
                                     <Button variant="contained" style={{
                                         backgroundColor: "#0C1115",
                                         color: 'white'
@@ -223,8 +218,6 @@ export default class ViewStudents extends React.Component {
                                         backgroundColor: "#BE2F29",
                                         color: 'white'
                                     }}>Ignore</Button>
-                                    {/* </Grid> */}
-                                    {/* <Grid item xs={12} sm={6} md={12} alignItems="flex-end"> */}
                                     <IconButton
                                         onClick={() => this.handleExpandClick(card.email)}
                                         aria-expanded={this.state.expanded}
@@ -232,10 +225,7 @@ export default class ViewStudents extends React.Component {
                                     >
                                         <ExpandMoreIcon />
                                     </IconButton>
-                                    {/* </Grid> */}
                                 </CardActions>
-
-                                {/* </Grid> */}
                                 <Collapse in={card.email == this.state.expandEmail} timeout="auto" unmountOnExit>
                                     <CardContent>
                                         <Typography paragraph>About {card.firstName}:</Typography>
@@ -258,13 +248,3 @@ export default class ViewStudents extends React.Component {
         )
     }
 }
-
-/*
-Tom
-ERin
-Olivia
-
-Keshav
-Momo Adam
-
-*/

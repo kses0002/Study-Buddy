@@ -23,9 +23,7 @@ html,body
     border-style: solid;
     border-top: 2px;
     border-bottom: 0.0px;
-    border-color: lightgray;
-    /* background: rgb(220, 220, 238); */
-    
+    border-color: lightgray;    
 }
 
 .rightChat{
@@ -35,7 +33,6 @@ html,body
 }
 
 .toppane {
-    /* width: 100%; */
     background: whitesmoke;
     flex:3;
     
@@ -43,21 +40,15 @@ html,body
 }
 
 .middlepane {
-    /* width: 100%; */
-    /* background: red; */
     flex:3;
-    /* border-radius: 2px; */
-    /* border-right: 'red'; */
-    /* overflow-y: scroll; */
-    
-   
-    
 }
 
 .bottompane {
     /* width: 40%; */
     background:white;
     flex:2;
+    /* position: relative; */
+
     
     
 }
@@ -91,6 +82,14 @@ html,body
     flex:4
 }
 
+.chat-header{
+    border-radius: 0px !important;
+}
 
-
-
+.chat-header-content{
+    background-color:  rgba(215, 215, 228, 0.432);
+    border: "solid";
+    border-radius: "100%";
+    border-width: "9.1px";
+    border-color: "black";
+}
