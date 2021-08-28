@@ -17,9 +17,7 @@ import './ViewStudents.css';
 import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
 import SnackBar from '../Components/SnackBar'
-// import { MuiThemeProvider, createMuiTheme } from '@material-ui/styles'
 
-// const redTheme = createMuiTheme({ palette: { primary: 'red' } })
 
 export default class ViewStudents extends React.Component {
     constructor() {
@@ -77,9 +75,11 @@ export default class ViewStudents extends React.Component {
                     API.graphql({ query: queries.listStudents }).then((studentData) => {
                         const allStudents = studentData.data.listStudents.items
 
+                        // console.log(currentStudent.notifiedUsers)
                         for (let i = 0; i < allStudents.length; i++) {
                             for (let j = 0; j < currentStudent.units.length; j++) {
-                                if (allStudents[i].units != null && allStudents[i].email != currentStudent.email
+                                // console.log(allStudents[i].firstName)
+                                if (!(currentStudent.notifiedUsers.includes(allStudents[i].email)) && allStudents[i].units != null && allStudents[i].email != currentStudent.email
                                     && allStudents[i].units.includes(currentStudent.units[j])) {
                                     if (allStudents[i].email in this.similarStudents) {
                                         this.similarStudents[allStudents[i].email].units.push(currentStudent.units[j])
@@ -109,6 +109,9 @@ export default class ViewStudents extends React.Component {
                             }
 
                         }
+
+                        // console.log(this.similarStudents)
+                        // console.log(this.state.list)
                         this.setState({ ...this.state, searchlist: this.state.list })
                     });
 
@@ -141,20 +144,76 @@ export default class ViewStudents extends React.Component {
     handleAddBuddy(addedBuddy) {
 
         const currentUser = this.state.currentUser
-        console.log(addedBuddy.firstName)
+
         this.setState({ ...this.state, buddyAdded: addedBuddy.firstName })
+
+
+
+        const newSearchList = this.state.searchlist.filter((item) => item.email != addedBuddy.email)
+
+        this.setState
+            (state => {
+                const searchlist = newSearchList;
+                return {
+                    searchlist,
+                }
+            }
+            )
+
+
 
         delete currentUser.createdAt
         delete currentUser.updatedAt
         delete addedBuddy.createdAt
         delete addedBuddy.updatedAt
 
-        // if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
-        //     currentUser.notifiedUsers = [addedBuddy.email]
-        // }
-        // else if (!(currentUser.notifiedUsers.includes(addedBuddy.email))) {
-        //     currentUser.notifiedUsers.push(addedBuddy.email)
-        // }
+        if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
+            currentUser.notifiedUsers = [addedBuddy.email]
+        }
+        else if (!(currentUser.notifiedUsers.includes(addedBuddy.email))) {
+            currentUser.notifiedUsers.push(addedBuddy.email)
+        }
+
+        if (!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null) {
+            addedBuddy.recievedRequests = [currentUser.email]
+        }
+        else if (!(addedBuddy.recievedRequests.includes(currentUser.email))) {
+            addedBuddy.recievedRequests.push(currentUser.email)
+        }
+
+        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
+    }
+
+    handleIgnoreBuddy(ignoredBuddy) {
+        this.setState({ ...this.state, buddyIgnored: ignoredBuddy.firstName })
+
+
+        const newSearchList = this.state.searchlist.filter((item) => item.email != ignoredBuddy.email)
+
+        this.setState
+            (state => {
+                const searchlist = newSearchList;
+                return {
+                    searchlist,
+                }
+            }
+            )
+
+        //////////////////////////////////////////////////////////////////////////
+        const currentUser = this.state.currentUser
+
+        delete currentUser.createdAt
+        delete currentUser.updatedAt
+        delete ignoredBuddy.createdAt
+        delete ignoredBuddy.updatedAt
+
+        if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
+            currentUser.notifiedUsers = [ignoredBuddy.email]
+        }
+        else if (!(currentUser.notifiedUsers.includes(ignoredBuddy.email))) {
+            currentUser.notifiedUsers.push(ignoredBuddy.email)
+        }
 
         // if (!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null) {
         //     addedBuddy.recievedRequests = [currentUser.email]
@@ -163,12 +222,8 @@ export default class ViewStudents extends React.Component {
         //     addedBuddy.recievedRequests.push(currentUser.email)
         // }
 
-        // API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
         // API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
-    }
-
-    handleIgnoreBuddy(ignoredBuddy) {
-        this.setState({ ...this.state, buddyIgnored: ignoredBuddy.firstName })
 
     }
     handleSnackBarClose() {
@@ -276,3 +331,15 @@ export default class ViewStudents extends React.Component {
         )
     }
 }
+
+/*
+Olivia
+Supriya
+Tom
+Erin
+Olivia
+Pierre
+Momo
+Adam
+Salia
+*/

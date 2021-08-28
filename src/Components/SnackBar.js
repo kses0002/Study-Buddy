@@ -39,20 +39,19 @@ export default function CustomizedSnackbars({ handleSnackBarClose, buddyAddedNam
         <div>
             { buddyAddedName!=null || buddyAddedName!=undefined  ? (
                     <div className={classes.root} >
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="success">
                                 {buddyAddedName} has been Added!
                             </Alert>
                         </Snackbar>
-                        <Alert severity="success">{buddyAddedName} has been Added!</Alert>
+                        
                     </div>) : 
                     ( <div className={classes.root} >
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                        <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="error">
                                 {buddyIgnoredName} has been Deleted!
                             </Alert>
                         </Snackbar>
-                        <Alert severity="error">{buddyIgnoredName} has been Deleted!</Alert>
                     </div>
                 )
             }
