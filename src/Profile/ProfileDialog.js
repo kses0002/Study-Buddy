@@ -8,8 +8,6 @@ import Button from '@material-ui/core/Button';
 
 function ProfileDialog({handleDialogClose, dialogContent}) { 
     const [open, setOpen] = React.useState(true);
-
-  
   
     const handleClose = () => {
       setOpen(false);

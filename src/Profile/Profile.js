@@ -81,7 +81,10 @@ class Profile extends React.Component {
             if ((new Set(this.state.units)).size !== this.state.units.length) {
                 alert("too many units chosen")
             } else {
-                API.graphql({ query: mutations.updateStudent, variables: { input: this.state } });
+                // API.graphql({ query: mutations.updateStudent, variables: { input: this.state } });
+                const graphqlObject=Object.assign({}, this.state)
+                delete graphqlObject.hasSubmiited
+                API.graphql({ query: mutations.updateStudent, variables: { input: graphqlObject } });
                 this.setState({ ...this.state, hasSubmiited: true })
             }
         } catch (e) { console.log(e) }
@@ -153,7 +156,7 @@ class Profile extends React.Component {
         })
     }
 
-    handleDialogClose() {
+    handleDialogClose(){
         this.setState({ ...this.state, hasSubmiited: false })
     }
 
@@ -285,8 +288,8 @@ class Profile extends React.Component {
                             </Button>
                         </Grid>
                         {this.state.hasSubmiited
-                            ? <ProfileDialog handleDialogClose={this.handleDialogClose}
-                                dialogContent={"Profile Successfully Updated"}></ProfileDialog>
+                            ? <ProfileDialog handleDialogClose={this.handleDialogClose} 
+                            dialogContent={"Profile Successfully Updated"}></ProfileDialog> 
                             : <div></div>
                         }
                     </Grid>

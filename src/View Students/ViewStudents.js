@@ -16,6 +16,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import './ViewStudents.css';
 import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
+import SnackBar from '../Components/SnackBar'
 // import { MuiThemeProvider, createMuiTheme } from '@material-ui/styles'
 
 // const redTheme = createMuiTheme({ palette: { primary: 'red' } })
@@ -30,7 +31,9 @@ export default class ViewStudents extends React.Component {
             searchlist: [],
             expandEmail: "",
             currentUser: "",
-            pageNumber: 0
+            pageNumber: 0,
+            buddyAdded: false,
+            buddyIgnored: false
         }
 
         this.usersPerPage = 10
@@ -45,6 +48,8 @@ export default class ViewStudents extends React.Component {
         this.handleExpandClick = this.handleExpandClick.bind(this);
         this.handleAddBuddy = this.handleAddBuddy.bind(this);
         this.changePage = this.changePage.bind(this);
+        this.handleSnackBarClose = this.handleSnackBarClose.bind(this);
+        this.handleIgnoreBuddy = this.handleIgnoreBuddy.bind(this);
 
     }
 
@@ -136,28 +141,43 @@ export default class ViewStudents extends React.Component {
     handleAddBuddy(addedBuddy) {
 
         const currentUser = this.state.currentUser
+        console.log(addedBuddy.firstName)
+        this.setState({ ...this.state, buddyAdded: addedBuddy.firstName })
 
         delete currentUser.createdAt
         delete currentUser.updatedAt
         delete addedBuddy.createdAt
         delete addedBuddy.updatedAt
 
-        if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
-            currentUser.notifiedUsers = [addedBuddy.email]
-        }
-        else if (!(currentUser.notifiedUsers.includes(addedBuddy.email))) {
-            currentUser.notifiedUsers.push(addedBuddy.email)
-        }
+        // if (!(currentUser.hasOwnProperty("notifiedUsers")) || currentUser.notifiedUsers == null) {
+        //     currentUser.notifiedUsers = [addedBuddy.email]
+        // }
+        // else if (!(currentUser.notifiedUsers.includes(addedBuddy.email))) {
+        //     currentUser.notifiedUsers.push(addedBuddy.email)
+        // }
 
-        if (!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null) {
-            addedBuddy.recievedRequests = [currentUser.email]
-        }
-        else if (!(addedBuddy.recievedRequests.includes(currentUser.email))) {
-            addedBuddy.recievedRequests.push(currentUser.email)
-        }
+        // if (!(addedBuddy.hasOwnProperty("recievedRequests")) || addedBuddy.recievedRequests == null) {
+        //     addedBuddy.recievedRequests = [currentUser.email]
+        // }
+        // else if (!(addedBuddy.recievedRequests.includes(currentUser.email))) {
+        //     addedBuddy.recievedRequests.push(currentUser.email)
+        // }
 
-        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
-        API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
+        // API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        // API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
+    }
+
+    handleIgnoreBuddy(ignoredBuddy) {
+        this.setState({ ...this.state, buddyIgnored: ignoredBuddy.firstName })
+
+    }
+    handleSnackBarClose() {
+        if (this.state.buddyAdded != false) {
+            this.setState({ ...this.state, buddyAdded: false })
+        }
+        if (this.state.buddyIgnored != false) {
+            this.setState({ ...this.state, buddyIgnored: false })
+        }
     }
 
     render(props) {
@@ -171,18 +191,17 @@ export default class ViewStudents extends React.Component {
         return (
             <div className="root">
                 <Grid container spacing={1} justifyContent="center" alignItems="center" direction="row" >
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            value={this.state.searchTerm}
-                            onChange={this.handleSearchQuery}
-                            className="searchBar"
-                        />
-                </Grid> 
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={this.state.searchTerm}
+                        onChange={this.handleSearchQuery}
+                        className="searchBar"
+                    />
+                </Grid>
                 <br></br>
                 <br></br>
                 <Grid container spacing={4} justifyContent="center" >
-                    {console.log(this.state.searchlist)}
                     {this.state.searchlist.slice(this.pagesVisited, this.pagesVisited + this.usersPerPage).map((card, index) => (
                         <Grid item xs={12} sm={6} md={3}  >
                             <Card className="card" >
@@ -214,10 +233,11 @@ export default class ViewStudents extends React.Component {
                                         backgroundColor: "#0C1115",
                                         color: 'white'
                                     }} size="small" onClick={() => this.handleAddBuddy(card)}>Add</Button>
-                                    <Button size="small" style={{
-                                        backgroundColor: "#BE2F29",
-                                        color: 'white'
-                                    }}>Ignore</Button>
+                                    <Button size="small" onClick={() => this.handleIgnoreBuddy(card)}
+                                        style={{
+                                            backgroundColor: "#BE2F29",
+                                            color: 'white'
+                                        }}>Ignore</Button>
                                     <IconButton
                                         onClick={() => this.handleExpandClick(card.email)}
                                         aria-expanded={this.state.expanded}
@@ -239,6 +259,14 @@ export default class ViewStudents extends React.Component {
                     ))
                     }
                 </Grid>
+                {this.state.buddyAdded
+                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyAddedName={this.state.buddyAdded}></SnackBar>
+                    : <div></div>
+                }
+                {this.state.buddyIgnored
+                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyIgnoredName={this.state.buddyIgnored}></SnackBar>
+                    : <div></div>
+                }
                 <Pagination
                     count={this.pageCount}
                     onChange={this.changePage} />
