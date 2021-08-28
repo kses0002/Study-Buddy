@@ -1,0 +1,24 @@
+.buddy-info-card{
+    width:20.5rem;
+
+    /* Height is the same as the root height in ViewBuddies.css*/
+    height: 48.5rem;
+    overflow-y: scroll;
+}
+
+.buddy-info-container{
+    /* height: 48.5rem; */
+    overflow-y: scroll;
+}
+
+
+/* .buddy-info-avatar{
+    color: 'white';
+    height:"6.5rem";
+    width:"6.5rem";
+    border-radius: "100%";
+    border: "solid";
+    border-width: "0.0px";
+    border-color: "black";
+    background-color: buddyColor;
+} */

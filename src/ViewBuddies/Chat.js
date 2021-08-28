@@ -51,25 +51,20 @@ function Chat({ data, currentUserEmail }) {
                 
                 const items = response?.data?.messagesByChannelID?.items;
 
-                // for (let i = items.length - 1; i >= 0; i--) {
-                    console.log(currentUserEmail)
-                    console.log(recipientEmail)
-                    // console.log(items)
+               
                 for (let i = 0; i < items.length; i++) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
                             && items[i].author == recipientEmail)) {
-                                console.log(items)
-
                         setMessages(oldItems => [...oldItems, items[i]])
 
                     }
                 }
                 // console.log(messages)
                 // setMessages(oldItems => oldItems.reverse())
-                items.map((message) => (
-                    console.log(message.body)
-                ))
+                // items.map((message) => (
+                //     console.log(message.body)
+                // ))
             })
     }, [data]);
 
@@ -176,7 +171,7 @@ function Chat({ data, currentUserEmail }) {
         const element = document.getElementById(messageRef);
             // console.log(element)
             // console.log(element.scrollHeight)
-            console.log(element.scrollTop)
+            //console.log(element.scrollTop)
             // console.log(element.scrollHeight-(element.scrollHeight/2 - element.clientHeight))
 
             // console.log(event.currentTarget)

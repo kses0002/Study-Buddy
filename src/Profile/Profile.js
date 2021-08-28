@@ -7,11 +7,13 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Box from '@material-ui/core/Box'; import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ComboBox from './ComboBox';
 import CheckBox from './CheckBox'
 import Grid from '@material-ui/core/Grid';
+import ProfileDialog from './ProfileDialog'
+
+
 Amplify.configure(awsExports);
 
 class Profile extends React.Component {
@@ -26,8 +28,10 @@ class Profile extends React.Component {
             aboutMe: '',
             degree: '',
             units: null,
-            studyMode: null
+            studyMode: null,
+            hasSubmiited: false
         }
+        this.handleDialogClose = this.handleDialogClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueFromComboBox = this.handleValueFromComboBox.bind(this);
@@ -78,7 +82,7 @@ class Profile extends React.Component {
                 alert("too many units chosen")
             } else {
                 API.graphql({ query: mutations.updateStudent, variables: { input: this.state } });
-                alert("SUBMIT")
+                this.setState({ ...this.state, hasSubmiited: true })
             }
         } catch (e) { console.log(e) }
     }
@@ -147,6 +151,10 @@ class Profile extends React.Component {
                 }
             });
         })
+    }
+
+    handleDialogClose() {
+        this.setState({ ...this.state, hasSubmiited: false })
     }
 
 
@@ -268,17 +276,22 @@ class Profile extends React.Component {
                         <br></br>
                         <br></br>
                         <Grid item xs={3}>
-                        <Button
-                            onClick={this.handleSubmit}
-                            variant="contained"
-                            color="primary"
-                        >
-                            Update Profile
-                        </Button>
+                            <Button
+                                onClick={this.handleSubmit}
+                                variant="contained"
+                                color="primary"
+                            >
+                                Update Profile
+                            </Button>
                         </Grid>
+                        {this.state.hasSubmiited
+                            ? <ProfileDialog handleDialogClose={this.handleDialogClose}
+                                dialogContent={"Profile Successfully Updated"}></ProfileDialog>
+                            : <div></div>
+                        }
                     </Grid>
                 </form>
-               
+
 
             </Container >
         )

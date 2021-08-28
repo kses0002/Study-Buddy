@@ -54,6 +54,7 @@ html,body
 }
 
 #root{
+    /* height: 48.5rem; */
     height: 48.5rem;
 }
 
@@ -82,14 +83,4 @@ html,body
     flex:4
 }
 
-.chat-header{
-    border-radius: 0px !important;
-}
 
-.chat-header-content{
-    background-color:  rgba(215, 215, 228, 0.432);
-    border: "solid";
-    border-radius: "100%";
-    border-width: "9.1px";
-    border-color: "black";
-}

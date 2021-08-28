@@ -4,7 +4,7 @@ import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
 import Chat from './Chat'
-import ChatHeader from'./ChatHeader'
+import ChatHeader from './ChatHeader'
 import './ViewBuddies.css'
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -18,8 +18,9 @@ import Avatar from '@material-ui/core/Avatar';
 import Popover from '@material-ui/core/Popover';
 import Icon from '@material-ui/core/Icon';
 import { Scrollbars } from 'react-custom-scrollbars';
-import InfoIcon from '@material-ui/icons/Info';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import BuddyInfoDrawer from './BuddyInfoDrawer.js'
+
 
 
 class ViewBuddies extends React.Component {
@@ -28,17 +29,15 @@ class ViewBuddies extends React.Component {
         this.state = {
             currentUser: [],
             myBuddies: [],
-            anchorE1: null,
-            expandedBuddy: "",
             messageRecipient: null,
             cardActive: "",
-            messageRecipientName:"",
-            messageRecipientColor:""
+            messageRecipientColor: "",
+            buddyInfoClicked:false
         }
 
-        this.handleClick = this.handleClick.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+        
         this.handleCardClick = this.handleCardClick.bind(this);
+        this.handleBuddyInfoButtonClick = this.handleBuddyInfoButtonClick.bind(this);
 
         this.cardColor = ["#00ABE1", "#E5B9A8", "#9CF6FB", "#1FC58E", "#F8DD2E", "#FAB162", "#FF6495"]
     }
@@ -73,23 +72,18 @@ class ViewBuddies extends React.Component {
     }
 
 
-    handleClick = (event, infoEmail) => {
-        console.log(event.currentTarget)
-        this.setState({ ...this.state, anchorE1: event.currentTarget, expandedBuddy: infoEmail });
-        console.log(this.state)
-
-    };
-
-    handleClose = () => {
-        this.setState({ ...this.state, anchorE1: null });
-        this.setState({ ...this.state, expandedBuddy: null });
-    };
-
-    handleCardClick(reciepientEmail, recipientName, cardId) {
-        this.setState({ ...this.state, messageRecipient: reciepientEmail, 
+    handleCardClick(buddy, cardId) {
+        this.setState({
+            ...this.state, messageRecipient: buddy.email,
             cardActive: cardId,
-             messageRecipientName: recipientName,
-              messageRecipientColor: this.cardColor[cardId % this.cardColor.length]})
+            currentBuddy :buddy, 
+            messageRecipientColor: this.cardColor[cardId % this.cardColor.length]
+        })
+    }
+
+    handleBuddyInfoButtonClick(buttonClick){
+        // console.log(buttonClick)
+        this.setState({...this.state, buddyInfoClicked:buttonClick})
     }
 
     render(props) {
@@ -115,41 +109,9 @@ class ViewBuddies extends React.Component {
                                                         {buddies.firstName[0]}
                                                     </Avatar>}
                                                 />
-                                                {/* {this.setState({...this.state, messageRecipientColor:this.cardColor[index % this.cardColor.length]})} */}
-                                                <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies.email, buddies.firstName, index)}>
+                                                <CardContent className="CardContent" onClick={() => this.handleCardClick(buddies, index)}>
                                                     {buddies.firstName}
                                                 </CardContent>
-                                                <CardActions className="CardAction">
-                                                    <IconButton color="primary" onClick={(e) => this.handleClick(e, buddies.email)}>
-                                                        <InfoIcon></InfoIcon>
-                                                    </IconButton>
-                                                    <Popover
-                                                        getContentAnchorEl={null}
-                                                        open={this.state.expandedBuddy == buddies.email}
-                                                        anchorEl={this.state.anchorE1}
-                                                        onClose={this.handleClose}
-                                                        anchorOrigin={{
-                                                            vertical: 'bottom',
-                                                            horizontal: 'center',
-                                                        }}
-                                                        transformOrigin={{
-                                                            vertical: 'top',
-                                                            horizontal: 'center',
-                                                        }}
-                                                    >
-                                                        <div>
-                                                            Units: {buddies.units.map((item) =>
-                                                                <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                            <br></br>
-                                                            Study Mode: {buddies.studyMode.map((item) =>
-                                                                <Typography gutterbottom="true" variant="body2" >{item}</Typography>)}
-                                                            <br></br>
-                                                            <Typography paragraph>
-                                                                About me: {buddies.aboutMe}
-                                                            </Typography>
-                                                        </div>
-                                                    </Popover>
-                                                </CardActions>
                                             </Card>
                                         </Grid>
                                     </Grid>
@@ -160,20 +122,22 @@ class ViewBuddies extends React.Component {
                 </div>
                 <div className="rightChat">
                     <div className="bottompane">
-                        
-                   
-                    {this.state.messageRecipient != null && this.state.messageRecipient != undefined
-                            ?  <ChatHeader buddyName={this.state.messageRecipientName} buddyColor={this.state.messageRecipientColor}></ChatHeader>
+                        {this.state.messageRecipient != null && this.state.messageRecipient != undefined
+                            ? <ChatHeader buddy={this.state.currentBuddy} buddyColor={this.state.messageRecipientColor} handleBuddyInfoButtonClick={this.handleBuddyInfoButtonClick}></ChatHeader>
                             : <div></div>
                         }
-                        
+
                         {this.state.messageRecipient != null && this.state.messageRecipient != undefined
                             ? <Chat data={this.state.messageRecipient} currentUserEmail={this.state.currentUser.email} />
                             : <div></div>
                         }
-                    
+
                     </div>
-                </div>
+                    {this.state.buddyInfoClicked!= false 
+                    ? <BuddyInfoDrawer buddy={this.state.currentBuddy} buddyColor={this.state.messageRecipientColor} ></BuddyInfoDrawer>
+                    : <div></div>
+                }
+                    </div>
             </div>
 
         )

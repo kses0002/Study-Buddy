@@ -1,0 +1,21 @@
+.chat-header{
+    border-radius: 0px !important;
+}
+
+.chat-header-content{
+    /* background-color:  whitesmoke; */
+    background-color:  rgba(215, 215, 228, 0.432);
+    
+    border-bottom-style: solid;
+    border-bottom-color: darkgray;
+    /* border-right: 2px; */
+    /* border-bottom: 0.0px; */
+    /* border-color: red;   */
+}
+
+.chat-action-content{
+    height:100%;
+    background-color:  rgba(215, 215, 228, 0.432);
+    border-bottom-style: solid;
+    border-bottom-color: darkgray;   
+}
