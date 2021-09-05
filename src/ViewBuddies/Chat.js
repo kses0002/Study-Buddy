@@ -43,7 +43,7 @@ function Chat({ data, currentUserEmail }) {
             .graphql(graphqlOperation(messagesByChannelID, {
                 channelID: '1',
                 sortDirection: 'DESC',
-                limit: 20
+                // limit: 20
             }))
             .then((response) => {
                 let loadMore = response?.data?.messagesByChannelID?.nextToken
@@ -83,7 +83,7 @@ function Chat({ data, currentUserEmail }) {
                 .graphql(graphqlOperation(messagesByChannelID, {
                     channelID: '1',
                     sortDirection: 'DESC',
-                    limit: 20,
+                    // limit: 20,
                     nextToken: token
 
                 }))

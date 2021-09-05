@@ -49,7 +49,7 @@ export default function CustomizedSnackbars({ handleSnackBarClose, buddyAddedNam
                     ( <div className={classes.root} >
                         <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="error">
-                                {buddyIgnoredName} has been Deleted!
+                                {buddyIgnoredName} has been Ignored!
                             </Alert>
                         </Snackbar>
                     </div>

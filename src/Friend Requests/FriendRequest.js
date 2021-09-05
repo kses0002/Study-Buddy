@@ -11,6 +11,8 @@ import Grid from '@material-ui/core/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 import './FriendRequest.css'
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 class FriendRequest extends React.Component {
@@ -122,8 +124,6 @@ class FriendRequest extends React.Component {
                                     // className="cardHeader"
                                     className={this.cardHeader[index % this.cardHeader.length]}
                                     title={<Typography variant="h5" style={{ color: "black" }}>{buddies.firstName + ": " + buddies.degree}</Typography>}
-                                    // title={buddies.firstName + ": " + buddies.degree}
-                                // subheader={buddies.degree}
                                 />
                                 <CardContent className="cardBody">
                                     <Grid container spacing={2} justifyContent="center">
@@ -134,6 +134,9 @@ class FriendRequest extends React.Component {
                                         <Grid item xs={6}>
                                             Study Mode: {buddies.studyMode.map((item) =>
                                                 <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            About Me: <Typography gutterbottom="true" variant="body2">{buddies.aboutMe}</Typography>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
@@ -152,6 +155,13 @@ class FriendRequest extends React.Component {
                                             }}>Ignore</Button>
                                         </Grid>
                                     </Grid>
+                                    {/* <IconButton
+                                        // onClick={() => this.handleExpandClick(card.email)}
+                                        aria-expanded={this.state.expanded}
+                                        aria-label="show more"
+                                    >
+                                        <ExpandMoreIcon />
+                                    </IconButton> */}
                                 </CardActions>
                             </Card>
                         </Grid>

@@ -79,7 +79,7 @@ export default class ViewStudents extends React.Component {
                         for (let i = 0; i < allStudents.length; i++) {
                             for (let j = 0; j < currentStudent.units.length; j++) {
                                 // console.log(allStudents[i].firstName)
-                                if (!(currentStudent.notifiedUsers.includes(allStudents[i].email)) && allStudents[i].units != null && allStudents[i].email != currentStudent.email
+                                if (!(!(currentStudent.notifiedUsers==null) && currentStudent.notifiedUsers.includes(allStudents[i].email)) && allStudents[i].units != null && allStudents[i].email != currentStudent.email
                                     && allStudents[i].units.includes(currentStudent.units[j])) {
                                     if (allStudents[i].email in this.similarStudents) {
                                         this.similarStudents[allStudents[i].email].units.push(currentStudent.units[j])
@@ -148,7 +148,6 @@ export default class ViewStudents extends React.Component {
         this.setState({ ...this.state, buddyAdded: addedBuddy.firstName })
 
 
-
         const newSearchList = this.state.searchlist.filter((item) => item.email != addedBuddy.email)
 
         this.setState
@@ -159,8 +158,6 @@ export default class ViewStudents extends React.Component {
                 }
             }
             )
-
-
 
         delete currentUser.createdAt
         delete currentUser.updatedAt
@@ -181,8 +178,8 @@ export default class ViewStudents extends React.Component {
             addedBuddy.recievedRequests.push(currentUser.email)
         }
 
-        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
-        API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
+        // API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        // API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
     }
 
     handleIgnoreBuddy(ignoredBuddy) {
@@ -222,7 +219,8 @@ export default class ViewStudents extends React.Component {
         //     addedBuddy.recievedRequests.push(currentUser.email)
         // }
 
-        API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        // API.graphql({ query: mutations.updateStudent, variables: { input: currentUser } });
+        
         // API.graphql({ query: mutations.updateStudent, variables: { input: addedBuddy } });
 
     }
@@ -331,15 +329,3 @@ export default class ViewStudents extends React.Component {
         )
     }
 }
-
-/*
-Olivia
-Supriya
-Tom
-Erin
-Olivia
-Pierre
-Momo
-Adam
-Salia
-*/

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Chip from '@material-ui/core/Chip';
+import AddIcon from '@material-ui/icons/Add';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -36,6 +36,7 @@ export default function ComboBox({data, onChildClick}) {
       <Autocomplete
         multiple
         id="tags-standard"
+        popupIcon={<AddIcon />}
         options={monashUnits}
         getOptionLabel={(option) => option.unit}
         // {...console.log(unitsSelected)}
