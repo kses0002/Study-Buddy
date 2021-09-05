@@ -17,9 +17,9 @@ function Chat({ data, currentUserEmail }) {
 
     const [page, setPage] = useState(1);
     const [token, setToken] = useState("");
-    const [currentScrollTop, setCurrentScrollTop] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
+    const [scrollHeight, setScrollHeight] = useState(0);
+
 
     const messagesEndRef = useRef(null)
     const messageRef = useRef(null)
@@ -34,7 +34,6 @@ function Chat({ data, currentUserEmail }) {
         Auth.currentUserInfo().then((userInfo) => {
             setUserInfo(userInfo)
         })
-        // messageRef=React.createRef();
     }, [])
 
     useEffect(() => {
@@ -48,10 +47,10 @@ function Chat({ data, currentUserEmail }) {
             .then((response) => {
                 let loadMore = response?.data?.messagesByChannelID?.nextToken
                 setToken(loadMore)
-                
+
                 const items = response?.data?.messagesByChannelID?.items;
 
-               
+
                 for (let i = 0; i < items.length; i++) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
@@ -60,11 +59,6 @@ function Chat({ data, currentUserEmail }) {
 
                     }
                 }
-                // console.log(messages)
-                // setMessages(oldItems => oldItems.reverse())
-                // items.map((message) => (
-                //     console.log(message.body)
-                // ))
             })
     }, [data]);
 
@@ -72,38 +66,38 @@ function Chat({ data, currentUserEmail }) {
         const loadUsers = async () => {
             setLoading(true);
             const element = document.getElementById(messageRef);
-            // console.log(element.scrollTop)
-           
-            // element.scrollBy(0,element.scrollHeight+200-(element.scrollHeight/2 - element.clientHeight))
-            element.scrollTo(0,860)
+
             setLoading(false);
         };
 
-            API
-                .graphql(graphqlOperation(messagesByChannelID, {
-                    channelID: '1',
-                    sortDirection: 'DESC',
-                    // limit: 20,
-                    nextToken: token
+        API
+            .graphql(graphqlOperation(messagesByChannelID, {
+                channelID: '1',
+                sortDirection: 'DESC',
+                // limit: 20,
+                nextToken: token
 
-                }))
-                .then((response) => {
-                    let loadMore = response?.data?.messagesByChannelID?.nextToken
-                    setToken(loadMore)
+            }))
+            .then((response) => {
+                let loadMore = response?.data?.messagesByChannelID?.nextToken
+                setToken(loadMore)
 
-                    const items = response?.data?.messagesByChannelID?.items;
+                const items = response?.data?.messagesByChannelID?.items;
 
-                    for (let i = 0; i < items.length; i++) {
-                        if ((items[i].author == currentUserEmail
-                            && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
-                                && items[i].author == recipientEmail)) {
+                for (let i = 0; i < items.length; i++) {
+                    if ((items[i].author == currentUserEmail
+                        && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
+                            && items[i].author == recipientEmail)) {
 
-                            setMessages(oldItems => [...oldItems, items[i]])
+                        setMessages(oldItems => [...oldItems, items[i]])
 
-                        }
                     }
-                })
-            
+                }
+                const element = document.getElementById(messageRef);
+                console.log(element.scrollHeight)
+                element.scrollTo(0, element.scrollHeight - scrollHeight)
+            })
+
 
         loadUsers();
 
@@ -116,7 +110,7 @@ function Chat({ data, currentUserEmail }) {
             .graphql(graphqlOperation(onCreateMessage))
             .subscribe({
                 next: (event) => {
-                    setMessages([event.value.data.onCreateMessage,...messages]);
+                    setMessages([event.value.data.onCreateMessage, ...messages]);
                 }
             });
 
@@ -169,21 +163,24 @@ function Chat({ data, currentUserEmail }) {
         const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
 
         const element = document.getElementById(messageRef);
-            // console.log(element)
-            // console.log(element.scrollHeight)
-            //console.log(element.scrollTop)
-            // console.log(element.scrollHeight-(element.scrollHeight/2 - element.clientHeight))
+        // console.log(element)
+        // console.log(element.scrollHeight)
+        // console.log(element.scrollTop)
+        // console.log(element.scrollHeight-(element.scrollHeight/2 - element.clientHeight))
 
-            // console.log(event.currentTarget)
+        // console.log(event.currentTarget)
         // console.log("ScrollTop: "+scrollTop)
         // console.log("clientHeight: "+clientHeight)
         // console.log("scrollHeight: "+scrollHeight)
         // console.log("")
         // if (scrollHeight - scrollTop === clientHeight && token!=null) {
-            // console.log("Page: "+page)
+        // console.log("Page: "+page)
         if (scrollTop === 0 && token != null) {
             // console.log(token)
+            setScrollHeight(element.scrollHeight)
+            console.log(element.scrollHeight)
             setPage(prev => prev + 1);
+
         }
     }
 
@@ -201,7 +198,10 @@ function Chat({ data, currentUserEmail }) {
                         </div>
                     ))}
 
-                    <AlwaysScrollToBottom />
+                    {userInfo == null
+                        ? <AlwaysScrollToBottom />
+                        : <div></div>
+                    }
 
                     {/* <div ref={messagesEndRef} /> */}
 
