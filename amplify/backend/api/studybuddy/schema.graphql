@@ -14,13 +14,13 @@ type Student @model
   buddies: [String]
 }
 
-type Message @model
-@key(name:"byChannelID", fields:["channelID","createdAt"],queryField:"messagesByChannelID"){
+type Message @model @searchable
+ @key(name: "messageBuddyPair", fields: ["buddyPair" , "createdAt"], queryField: "messageByBuddyPair"){
   id: ID!
-  channelID: ID!
   author: String!
   recepient: String!
   body: String!
+  buddyPair: String
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }

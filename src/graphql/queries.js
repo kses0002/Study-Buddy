@@ -50,10 +50,10 @@ export const getMessage = /* GraphQL */ `
   query GetMessage($id: ID!) {
     getMessage(id: $id) {
       id
-      channelID
       author
       recepient
       body
+      buddyPair
       createdAt
       updatedAt
     }
@@ -68,10 +68,10 @@ export const listMessages = /* GraphQL */ `
     listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        channelID
         author
         recepient
         body
+        buddyPair
         createdAt
         updatedAt
       }
@@ -113,17 +113,17 @@ export const studentByEmail = /* GraphQL */ `
     }
   }
 `;
-export const messagesByChannelID = /* GraphQL */ `
-  query MessagesByChannelID(
-    $channelID: ID
+export const messageByBuddyPair = /* GraphQL */ `
+  query MessageByBuddyPair(
+    $buddyPair: String
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    messagesByChannelID(
-      channelID: $channelID
+    messageByBuddyPair(
+      buddyPair: $buddyPair
       createdAt: $createdAt
       sortDirection: $sortDirection
       filter: $filter
@@ -132,14 +132,43 @@ export const messagesByChannelID = /* GraphQL */ `
     ) {
       items {
         id
-        channelID
         author
         recepient
         body
+        buddyPair
         createdAt
         updatedAt
       }
       nextToken
+    }
+  }
+`;
+export const searchMessages = /* GraphQL */ `
+  query SearchMessages(
+    $filter: SearchableMessageFilterInput
+    $sort: SearchableMessageSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchMessages(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        author
+        recepient
+        body
+        buddyPair
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
     }
   }
 `;

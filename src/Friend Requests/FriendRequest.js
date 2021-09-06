@@ -11,19 +11,21 @@ import Grid from '@material-ui/core/Grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CardHeader from '@material-ui/core/CardHeader';
 import './FriendRequest.css'
-import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import SnackBar from '../Components/SnackBar'
 
 class FriendRequest extends React.Component {
     constructor() {
         super();
         this.state = {
             potentialBuddies: [],
-            currentUser: []
+            currentUser: [],
+            buddyAdded: "",
+            buddyIgnored: ""
         }
 
-        this.handleAcceptBuddy = this.handleAcceptBuddy.bind(this);
+        // this.handleAcceptBuddy = this.handleAcceptBuddy.bind(this);
+        this.handleSnackBarClose = this.handleSnackBarClose.bind(this);
+        // this.handleIgnoreBuddy = this.handleIgnoreBuddy.bind(this);
 
         this.cardHeader = ["cardHeader1", "cardHeader2", "cardHeader3", "cardHeader4", "cardHeader5", "cardHeader6", "cardHeader7"]
         this.cardColor = ["#00ABE1", "#E5B9A8", "#9CF6FB", "#1FC58E", "#F8DD2E", "#FAB162", "#FF6495"]
@@ -52,20 +54,14 @@ class FriendRequest extends React.Component {
                                 })
                         }
                     }
-
-
                 })
         })
     }
 
     handleAcceptBuddy(acceptedBuddyEmail, a) {
-        console.log(a)
 
         delete this.state.currentUser.createdAt
         delete this.state.currentUser.updatedAt
-
-
-
         API.graphql({ query: queries.studentByEmail, variables: { email: acceptedBuddyEmail } })
             .then((studentData) => {
 
@@ -73,6 +69,9 @@ class FriendRequest extends React.Component {
 
                 delete acceptedBuddy.createdAt
                 delete acceptedBuddy.updatedAt
+
+                this.setState({ ...this.state, buddyAdded: acceptedBuddy.firstName })
+                console.log(this.state)
 
 
                 if (!(this.state.currentUser.hasOwnProperty("buddies")) || this.state.currentUser.buddies == null ||
@@ -107,10 +106,61 @@ class FriendRequest extends React.Component {
                     acceptedBuddy.buddies.push(this.state.currentUser.email)
                 }
 
+                console.log("Buddy Accepted")
                 // this.state.currentUser.buddies=[]
-                API.graphql({ query: mutations.updateStudent, variables: { input: acceptedBuddy } });
-                API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
+                // API.graphql({ query: mutations.updateStudent, variables: { input: acceptedBuddy } });
+                // API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
             })
+    }
+
+    handleIgnoreBuddy(ignoredBuddy) {
+        console.log(ignoredBuddy.firstName)
+        this.setState({ ...this.state, buddyAdded: "aaaaa" })
+        this.setState({ ...this.state, buddyIgnored: "aaaa" })
+        console.log(this.state)
+
+
+
+        const newPotentialBuddies = this.state.potentialBuddies.filter((item) => item.email != ignoredBuddy.email)
+
+        this.setState
+            (state => {
+                const potentialBuddies = newPotentialBuddies;
+                return {
+                    potentialBuddies,
+                }
+            }
+            )
+
+        delete this.state.currentUser.createdAt
+        delete this.state.currentUser.updatedAt
+        delete ignoredBuddy.createdAt
+        delete ignoredBuddy.updatedAt
+
+
+        if (this.state.currentUser.recievedRequests.includes(ignoredBuddy.email)) {
+            this.state.currentUser.recievedRequests = this.state.currentUser.recievedRequests.filter(item => item !== ignoredBuddy.email)
+        }
+
+        for (let i = 0; i < this.state.potentialBuddies.length; i++) {
+            if (this.state.potentialBuddies[i].email == ignoredBuddy.email) {
+                const tempArray = [...this.state.potentialBuddies]
+                tempArray.splice(i, 1)
+
+                this.setState({ ...this.state, potentialBuddies: tempArray })
+
+            }
+        }
+        // API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
+    }
+
+    handleSnackBarClose() {
+        if (this.state.buddyAdded != false) {
+            this.setState({ ...this.state, buddyAdded: false })
+        }
+        if (this.state.buddyIgnored != false) {
+            this.setState({ ...this.state, buddyIgnored: false })
+        }
     }
 
     render(props) {
@@ -149,10 +199,11 @@ class FriendRequest extends React.Component {
                                             }} size="small" onClick={() => this.handleAcceptBuddy(buddies.email, this.state.potentialBuddies)}>Accept</Button>
                                         </Grid>
                                         <Grid item xs={1}>
-                                            <Button size="small" style={{
-                                                backgroundColor: "#BE2F29",
-                                                color: 'white'
-                                            }}>Ignore</Button>
+                                            <Button size="small" onClick={() => this.handleIgnoreBuddy(buddies)}
+                                                style={{
+                                                    backgroundColor: "#BE2F29",
+                                                    color: 'white'
+                                                }}>Ignore</Button>
                                         </Grid>
                                     </Grid>
                                     {/* <IconButton
@@ -167,8 +218,15 @@ class FriendRequest extends React.Component {
                         </Grid>
                     </Grid>
                 ))}
+                 {this.state.buddyAdded
+                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyAddedName={this.state.buddyAdded}></SnackBar>
+                    : <div></div>
+                } 
+                 {this.state.buddyIgnored
+                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyIgnoredName={this.state.buddyIgnored}></SnackBar>
+                    : <div></div>
+                } 
             </div>
-
         )
     }
 }
