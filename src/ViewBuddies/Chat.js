@@ -45,7 +45,7 @@ function Chat({ data, currentUserEmail }) {
                 let loadMore = response?.data?.messageByBuddyPair?.nextToken
                 setToken(loadMore)
                 const items = response?.data?.messageByBuddyPair?.items;
-                console.log(items)
+
                 for (let i = 0; i < items.length; i++) {
                     if ((items[i].author == currentUserEmail
                         && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
@@ -114,22 +114,24 @@ function Chat({ data, currentUserEmail }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (messageBody != "") {
+            console.log(messageBody)
+            const input = {
+                author: userInfo.attributes.email,
+                body: messageBody.trim(),
+                recepient: recipientEmail,
+                buddyPair: currentUserEmail < recipientEmail ? currentUserEmail + recipientEmail
+                    : recipientEmail + currentUserEmail
+            };
 
-        const input = {
-            author: userInfo.attributes.email,
-            body: messageBody.trim(),
-            recepient: recipientEmail,
-            buddyPair: currentUserEmail < recipientEmail ? currentUserEmail + recipientEmail
-                : recipientEmail + currentUserEmail
-        };
+            try {
+                setMessageBody('');
+                await API.graphql(graphqlOperation(createMessage, { input }))
+            } catch (error) {
+                console.warn(error);
+            }
 
-        try {
-            setMessageBody('');
-            await API.graphql(graphqlOperation(createMessage, { input }))
-        } catch (error) {
-            console.warn(error);
         }
-
     };
 
     const AlwaysScrollToBottom = () => {
@@ -172,6 +174,7 @@ function Chat({ data, currentUserEmail }) {
                         disabled={userInfo === null}
                         onChange={handleChange}
                         value={messageBody}
+                        autoComplete="off"
                     />
                 </form>
             </div>
