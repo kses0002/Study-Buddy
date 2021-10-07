@@ -52,7 +52,7 @@ export default function BuddySearch({ currentUser, fetchData }) {
     };
 
     function submitSearchTerms() {
-      
+
 
         let filterArray = []
 
@@ -93,7 +93,7 @@ export default function BuddySearch({ currentUser, fetchData }) {
 
         let filter = { or: filterArray }
 
-      
+
         fetchData(filter)
         // let filter = {
         //     or: [
@@ -168,10 +168,8 @@ export default function BuddySearch({ currentUser, fetchData }) {
                     ))}
                 </Select>
 
-                {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel> */}
+
                 <Select
-                    // label="Search Unit Code"
-                    // labelId="demo-multiple-checkbox-label"
                     id="SearchBarUnitCodes"
                     menuPlacement="bottom"
                     value={units}
