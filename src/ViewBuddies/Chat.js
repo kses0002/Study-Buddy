@@ -4,11 +4,14 @@ import Button from '@material-ui/core/Button';
 import { graphqlOperation } from '@aws-amplify/api';
 import * as queries from '../graphql/queries';
 import { createMessage } from '../graphql/mutations';
+import { listLatestMessages } from '../graphql/queries';
 import { onCreateMessage } from '../graphql/subscriptions'
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import * as mutations from '../graphql/mutations';
 import './Chat.css'
 
 
-function Chat({ data, currentUserEmail }) {
+function Chat({ data, currentUserEmail, handleCurrentMessage }) {
     const [messages, setMessages] = useState([]);
     const [messageBody, setMessageBody] = useState('');
     const [userInfo, setUserInfo] = useState(null)
@@ -20,6 +23,8 @@ function Chat({ data, currentUserEmail }) {
 
     const messagesEndRef = useRef(null)
     const messageRef = useRef(null)
+    const myFormRef = useRef(null)
+
 
     useEffect(() => {
         setRecipientEmail(data.emailRef)
@@ -72,12 +77,13 @@ function Chat({ data, currentUserEmail }) {
                 let loadMore = response?.data?.messageByBuddyPair?.nextToken
                 setToken(loadMore)
                 const items = response?.data?.messageByBuddyPair?.items;
-                console.log(items)
-                for (let i = 0; i < items.length; i++) {
-                    if ((items[i].author == currentUserEmail
-                        && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
-                            && items[i].author == recipientEmail)) {
-                        setMessages(oldItems => [...oldItems, items[i]])
+                if (items != undefined) {
+                    for (let i = 0; i < items.length; i++) {
+                        if ((items[i].author == currentUserEmail
+                            && items[i].recepient == recipientEmail) || (items[i].recepient == currentUserEmail
+                                && items[i].author == recipientEmail)) {
+                            setMessages(oldItems => [...oldItems, items[i]])
+                        }
                     }
                 }
                 const element = document.getElementById(messageRef);
@@ -86,36 +92,40 @@ function Chat({ data, currentUserEmail }) {
     }, [page]);
 
     useEffect(() => {
+        try {
+            const subscription = API
+                .graphql(graphqlOperation(onCreateMessage))
+                .subscribe({
+                    next: (event) => {
+                        if ((currentUserEmail == event.value.data.onCreateMessage.author
+                            && recipientEmail == event.value.data.onCreateMessage.recepient) ||
+                            (recipientEmail == event.value.data.onCreateMessage.author
+                                && currentUserEmail == event.value.data.onCreateMessage.recepient)) {
 
-        const subscription = API
-            .graphql(graphqlOperation(onCreateMessage))
-            .subscribe({
-                next: (event) => {
-                    if ((currentUserEmail == event.value.data.onCreateMessage.author
-                        && recipientEmail == event.value.data.onCreateMessage.recepient) ||
-                        (recipientEmail == event.value.data.onCreateMessage.author
-                            && currentUserEmail == event.value.data.onCreateMessage.recepient)) {
-                        setMessages([event.value.data.onCreateMessage, ...messages]);
+                            setMessages([event.value.data.onCreateMessage, ...messages]);
+                        }
+                        setScrollToBottomCheck(true)
+                        setScrollToBottomCheck(false)
                     }
-                    setScrollToBottomCheck(true)
-                    setScrollToBottomCheck(false)
-                }
-            });
+                });
 
-        return () => {
-            subscription.unsubscribe();
-        };
+            return () => {
+                subscription.unsubscribe();
+            };
+        } catch (error) {
+            console.log(error)
+        }
     }, [messages]);
 
     const handleChange = (event) => {
         setMessageBody(event.target.value);
+
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         event.stopPropagation();
         if (messageBody != "") {
-            console.log(messageBody)
             const input = {
                 author: userInfo.attributes.email,
                 body: messageBody.trim(),
@@ -127,10 +137,50 @@ function Chat({ data, currentUserEmail }) {
             try {
                 setMessageBody('');
                 await API.graphql(graphqlOperation(createMessage, { input }))
+                handleCurrentMessage(input)
             } catch (error) {
                 console.warn(error);
             }
 
+
+
+            const latestMessageInput = {
+                author: userInfo.attributes.email,
+                body: messageBody.trim(),
+                recepient: recipientEmail,
+                seen: "false",
+                buddyPair: currentUserEmail < recipientEmail ? currentUserEmail + recipientEmail
+                    : recipientEmail + currentUserEmail
+
+            }
+
+            try {
+                let filter = {
+                    buddyPair: {
+                        eq: currentUserEmail < recipientEmail ? currentUserEmail + recipientEmail :
+                            recipientEmail + currentUserEmail
+                    },
+                    recepient: {
+                        eq: recipientEmail
+                    }
+                };
+
+                await API.graphql({ query: listLatestMessages, variables: { filter: filter } })
+                    .then((response) => {
+                        if (response.data.listLatestMessages.items.length == 0) {
+                            API.graphql({ query: mutations.createLatestMessage, variables: { input: latestMessageInput } });
+                        }
+                        else {
+                            latestMessageInput.id = response.data.listLatestMessages.items[0].id
+                            API.graphql({ query: mutations.updateLatestMessage, variables: { input: latestMessageInput } });
+                        }
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+            }
+            catch (error) {
+                console.warn(error);
+            }
         }
     };
 
@@ -149,6 +199,17 @@ function Chat({ data, currentUserEmail }) {
         }
     }
 
+    function onEnterPress(e) {
+        // if(e.keyCode == 13 && e.shiftKey == false) {
+        //     e.preventDefault();
+        //     myFormRef.submit();
+        //   }
+        if (e.key === "Enter" && !e.shiftKey) {
+            //e.preventDefault();
+            handleSubmit(e)
+            // handleSubmit(onSubmit)(); // this won't be triggered
+          }
+    }
     return (
         <div className="container">
             <div className="messages" >
@@ -166,8 +227,10 @@ function Chat({ data, currentUserEmail }) {
                 </div>
             </div>
             <div className="chat-bar">
-                <form onSubmit={handleSubmit}>
-                    <input
+                {/* <div className="chat-bar" style={{ height: "204px" }}> */}
+                {/* <form onSubmit={handleSubmit} id={myFormRef}> */}
+                <form onSubmit={handleSubmit} ref={myFormRef}>
+                    {/* <input
                         type="text"
                         name="messageBody"
                         placeholder="Type your message here"
@@ -175,6 +238,23 @@ function Chat({ data, currentUserEmail }) {
                         onChange={handleChange}
                         value={messageBody}
                         autoComplete="off"
+                        style={{ height: "100%" }}
+                    /> */}
+                    <TextareaAutosize
+                        // variant="outlined"
+                        value={messageBody}
+                        placeholder="Type your message here"
+                        name="messageBody"
+                        maxRows={5}
+                        onKeyDown={onEnterPress}
+                        // style={{ width: "100%" }}
+                        minRows={1}
+                        disabled={userInfo === null}
+                        onChange={handleChange}
+                        autoComplete="off"
+                        id="messageBody"
+                        className="messageBody"
+
                     />
                 </form>
             </div>

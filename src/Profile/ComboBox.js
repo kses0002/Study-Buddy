@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,21 +15,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const monashUnits = [
+  { unit: "FIT2012: Introduction to python" },
+  { unit: "FIT4124: Introduction to Java" },
+  { unit: "FIT5232: Introduction to C" },
+  { unit: "FIT6543: Introduction to AWS" },
+  { unit: "FIT4123: Introduction to React" },
+]
 
+export default function ComboBox({ data, onChildClick }) {
 
-export default function ComboBox({data, onChildClick}) {
   const classes = useStyles();
-  const unitsSelected=[]
-
-
-  if(data!=null){
-    for(let i=0;i<data.length;i++){
-      unitsSelected.push({
-        unit: data[i]
-      })
-    }
-  }
   
+  const [units, setUnits] = useState([])
+  // const [monashUnits, setMonashUnits] = useState([])
+  
+
+useEffect(()=>{
+
+},)
+  
+
+  useState(() => {
+    if (data != null) {
+      const unitsSelected = []
+      for (let i = 0; i < data.length; i++) {
+        unitsSelected.push({
+          unit: data[i]
+        })
+
+
+        for (let j = 0; j < monashUnits.length; j++) {
+          if (monashUnits[j].unit == data[i]) {
+            monashUnits.splice(j, 1)
+          }
+        }
+      }
+      setUnits(unitsSelected)
+    }
+  }, [])
+
+  function onChange(event, value) {
+    console.log(monashUnits)
+    if (value.length < units.length){
+      
+      const deletedUnit =  units.filter(x => !value.includes(x)) ;
+      console.log(deletedUnit)
+      monashUnits.push(deletedUnit[0])
+    }
+    console.log(units)
+    console.log(value)
+    console.log(monashUnits)
+    onChildClick(value)
+  }
+
 
   return (
     <div className={classes.root}>
@@ -37,12 +76,13 @@ export default function ComboBox({data, onChildClick}) {
         multiple
         id="tags-standard"
         popupIcon={<AddIcon />}
+        // blurOnSelect={["FIT5232: Introduction to C","FIT6543: Introduction to AWS" ]}
         options={monashUnits}
+
         getOptionLabel={(option) => option.unit}
-        // {...console.log(unitsSelected)}
-        defaultValue={unitsSelected}
-        onChange={(event, value) => {onChildClick(value)}}
-        renderInput={(params) => ( 
+        defaultValue={units}
+        onChange={(event, value) => { onChange(event, value) }}
+        renderInput={(params) => (
           <TextField
             {...params}
             variant="standard"
@@ -55,15 +95,4 @@ export default function ComboBox({data, onChildClick}) {
   );
 }
 
-const monashUnits = [
-  { unit: "FIT2012: Introduction to python" },
-  { unit: "FIT4124: Introduction to Java" },
-  { unit: "FIT5232: Introduction to C" },
-  { unit: "FIT6543: Introduction to AWS" },
-  { unit: "FIT4123: Introduction to React" },
-]
 
-const monashUnitsA = [
-  { unit: "FIT6543: Introduction to AWS" },
-  { unit: "FIT4123: Introduction to React" }
-]

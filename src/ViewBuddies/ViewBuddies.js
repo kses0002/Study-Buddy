@@ -1,5 +1,5 @@
 import Amplify, { API, Auth } from 'aws-amplify'
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 import Button from '@material-ui/core/Button';
@@ -21,187 +21,267 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import BuddyInfoDrawer from './BuddyInfoDrawer.js'
 import { graphqlOperation } from '@aws-amplify/api';
-import { onCreateMessage } from '../graphql/subscriptions'
-import { ChatEngine, getOrCreateChat } from 'react-chat-engine';
+import { onCreateLatestMessage, onUpdateLatestMessage } from '../graphql/subscriptions'
 
 
-
-function ViewBuddies() {
+export default function ViewBuddies() {
     const [currentUser, setCurrentUser] = useState([])
-    const [userInfo, setUserInfo] = useState()
     const [myBuddies, setMyBuddies] = useState([])
     const [messageRecipient, setMessageRecipient] = useState(null)
     const [cardActive, setCardActive] = useState("")
     const [messageRecipientColor, setMessageRecipientColor] = useState("")
     const [buddyInfoClicked, setBuddyInfoClicked] = useState(false)
-    const [currentBuddy, setCurrentBuddy] = useState(null)
+    const [currentBuddy, setCurrentBuddy] = useState("")
+    const [userInfo, setUserInfo] = useState(null)
+    const [latestMessages, setLatestMessages] = useState(null)
+    const [subscriptionData, setSubscrptionData] = useState(null)
+
 
     const cardColor = ["#00ABE1", "#E5B9A8", "#9CF6FB", "#1FC58E", "#F8DD2E", "#FAB162", "#FF6495"]
 
     useEffect(() => {
         Auth.currentUserInfo().then((userInfo) => {
             setUserInfo(userInfo)
-            // console.log(userInfo)
-            API.graphql({ query: queries.studentByEmail, variables: { email: userInfo.attributes.email } })
+        })
+    }, [])
+
+
+    useEffect(() => {
+        Auth.currentAuthenticatedUser().then((user) => {
+            API.graphql({ query: queries.studentByEmail, variables: { email: user.attributes.email } })
                 .then((currentUserData) => {
                     const currentStudent = currentUserData.data.studentByEmail.items[0]
                     setCurrentUser(currentStudent)
 
-                    if (currentStudent.buddies != null) {
-                        for (let i = 0; i < currentStudent.buddies.length; i++) {
-                            API.graphql({ query: queries.studentByEmail, variables: { email: currentStudent.buddies[i] } })
-                                .then((buddyData) => {
 
-                                    setMyBuddies(oldMyBuddies => [...oldMyBuddies, buddyData.data.studentByEmail.items[0]])
-                                })
-                        }
+                    API.graphql(graphqlOperation(queries.latestMessageByBuddyPair, {
+                        recepient: user.attributes.email
                     }
+                    )).then((recievedMessagesData) => {
+                        const latestMessageObject = {}
+                        const recievedMessages = recievedMessagesData.data.latestMessageByBuddyPair.items
+
+                        for (let j = 0; j < recievedMessages.length; j++) {
+                            latestMessageObject[recievedMessages[j].author] = recievedMessages[j]
+                        }
+
+                        if (currentStudent.buddies != null) {
+                            for (let i = 0; i < currentStudent.buddies.length; i++) {
+
+                                API.graphql({ query: queries.studentByEmail, variables: { email: currentStudent.buddies[i] } })
+                                    .then((buddyData) => {
+                                        const buddy = buddyData.data.studentByEmail.items[0]
+                                        if (!(buddy.email in latestMessageObject)) {
+                                            latestMessageObject[buddy.email] = { body: "" }
+                                        }
+
+                                        setMyBuddies(oldArray => [...oldArray, buddyData.data.studentByEmail.items[0]])
+                                    })
+                            }
+                            setLatestMessages(latestMessageObject)
+                        }
+                    })
 
                 })
         })
     }, [])
 
+
+    useEffect(() => {
+        if (userInfo != null) {
+            try {
+                const subscription = API
+                    .graphql(graphqlOperation(onUpdateLatestMessage))
+                    .subscribe({
+                        next: (event) => {
+                            const data = event.value.data.onUpdateLatestMessage
+                            if (data.recepient == userInfo.attributes.email  && !(data.seen=="true" && data.body.substr(0,4) =="You:")) {
+                                setSubscrptionData(data)
+                            }
+                        }
+                    });
+            }
+            catch (error) {
+                console.log(error)
+            }
+
+            try {
+                const subscription = API
+                    .graphql(graphqlOperation(onCreateLatestMessage))
+                    .subscribe({
+                        next: (event) => {
+                            const data = event.value.data.onCreateLatestMessage
+                            if (data.author == userInfo.attributes.email) {
+                                setSubscrptionData(data)
+                            }
+                        }
+                    });
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+    }, [userInfo]);
+
+    useEffect(() => {
+        if (subscriptionData != null) {
+            let newData = null
+            let keyToChange = null
+
+            if (subscriptionData.author in latestMessages) {
+                keyToChange = subscriptionData.author
+                newData = latestMessages[keyToChange]
+                newData.body = subscriptionData.body
+                newData.seen = subscriptionData.seen
+
+
+                if (newData.author == currentBuddy.email) {
+                    newData.seen = "true"
+                }
+
+                setLatestMessages(oldData => ({
+                    ...oldData, [subscriptionData.author]: newData
+                }))
+
+            }
+            else {
+                keyToChange = subscriptionData.recepient
+                newData = subscriptionData
+
+
+                if (newData.author == currentBuddy.email) {
+                    newData.seen = "true"
+                }
+
+                setLatestMessages(oldData => ({
+                    ...oldData, [subscriptionData.recepient]: newData
+                }))
+            }
+            // const newData = { ...latestMessages[keyToChange], seen: subscriptionData.seen, body:subscriptionData.body } 
+            // API.graphql({ query: mutations.updateLatestMessage, variables: { input: newData } });
+        }
+    }, [subscriptionData])
+
+
     function handleCardClick(buddy, cardId) {
         setMessageRecipient(buddy.email)
         setCardActive(cardId)
-        setMessageRecipientColor(cardColor[cardId % cardColor.length])
         setCurrentBuddy(buddy)
+        setMessageRecipientColor(cardColor[cardId % cardColor.length])
+
+        // latestMessages[buddy.email].seen = "true"
+
+        const keyToChange = buddy.email
+
+        // const newData = latestMessages[keyToChange]
+        // newData.seen = "true"
+
+        const newData = { ...latestMessages[keyToChange], seen: "true" }
+        setLatestMessages(oldData => ({
+            ...oldData, [buddy.email]: newData
+        }))
+
+        API.graphql({ query: mutations.updateLatestMessage, variables: { input: newData } });
+
     }
 
     function handleBuddyInfoButtonClick(buttonClick) {
         setBuddyInfoClicked(buttonClick)
     }
 
-    useEffect(() => {
-        Auth.currentUserInfo().then((userInfo) => {
-            setUserInfo(userInfo)
-        })
-    }, [])
+    function removeBuddy(buddyToRemove){
+        for (let i=0; i<myBuddies.length;i++){
+            if(myBuddies[i].email==buddyToRemove.email){
+                setMyBuddies(myBuddies.filter(item => item.email !== buddyToRemove.email));
+                setMessageRecipient(null)
+                setBuddyInfoClicked(false)
+            }
+        }
+    }
 
-    // useEffect(() => {
-    //     var axios = require('axios');
+    function handleCurrentMessage(currentMessage) {
+        if (currentMessage.author == userInfo.attributes.email) {
 
-    //     API.graphql({ query: queries.listStudents } )
-    //         .then((currentUserData) => {
-    //             const user=currentUserData.data.listStudents.items
-    //             for(let i=0;i<user.length;i++){
-    //                 var data = {
-    //                     "username": user[i].firstName,
-    //                     "secret": user[i].id,
-    //                     "email": user[i].email,
-    //                     "first_name": user[i].firstName,
-    //                     "last_name": ""
-            
-    //                 }
-    //                 console.log(data)
-    //                 var config = {
-    //                     method: 'post',
-    //                     url: 'https://api.chatengine.io/users/',
-    //                     headers: {
-    //                         'PRIVATE-KEY': '{{df197a36-c1e6-4c7e-b350-f8aa7620495b}}'
-    //                     },
-    //                     data: data
-    //                 };
-            
-    //                 axios(config)
-    //                     .then(function (response) {
-    //                         console.log(JSON.stringify(response.data));
-    //                     })
-    //                     .catch(function (error) {
-    //                         console.log(error);
-    //                     });
-    //             }
-    //         })
-        
-    // }, [])
+            const keyToChange = currentMessage.recepient
 
-    // useEffect(() => {
-    //     try{
-    //         const subscription = API
-    //         .graphql(graphqlOperation(onCreateMessage))
-    //         .subscribe({
-    //             next: (event) => {
-    //                 if (event.value.data.onCreateMessage.recepient == "keshav.sesh@gmail.com") {
-    //                     console.log(event.value.data.onCreateMessage.author)
-    //                 }
+            // const newData = latestMessages[keyToChange]
+            // newData.seen = "true"
+            // newData.body = "You: " + currentMessage.body
 
-    //             }
-    //         });
+            const newData = { ...latestMessages[keyToChange], seen: "true", body: "You: " + currentMessage.body }
 
-    //         subscription.unsubscribe();
+            setLatestMessages(oldData => ({
+                ...oldData, [currentMessage.recepient]: newData
+            }))
 
-    // }catch(e){
-    //     console.log(e)
-    // }
-    // }, );
+            API.graphql({ query: mutations.updateLatestMessage, variables: { input: newData } });
+
+        }
+    }
 
     return (
-       
-        <div className="ChatEngine">
-             {console.log(userInfo)}
-            <ChatEngine
-                height='90vh'
-                projectID='fc520d87-fa5a-41f6-a875-47536dedc84f'
-                userName="Keshav"
-                userSecret="9bcbf03d-7d0c-4bca-bf9a-aa17ad711a8e"
-                renderIceBreaker={(chat) => { }}
-                renderNewChatForm={(creds) => {}}
-                // renderChatList={(chatAppState) => {console.log(chatAppState)}}
-            />
+        <div className="splitscreen">
+            <div className="leftList">
+                <div className="middlepane">
+                    <Scrollbars>
+                        {myBuddies.map((buddies, index) => (
+                            <div>
+                                <Grid container spacing={0} justifyContent="center" >
+                                    <Grid item xs={12}   >
+                                        <Card className={cardActive === index ? "cardActive" : "BuddyCard"}>
+                                            <CardHeader
+                                                avatar={<Avatar aria-label="recipe" style={{
+                                                    color: 'white',
+                                                    borderRadius: "100%",
+                                                    border: "solid",
+                                                    borderWidth: "0.0px", borderColor: "black",
+                                                    backgroundColor: cardColor[index % cardColor.length]
+                                                }}>
+                                                    {buddies.firstName[0]}
+
+                                                </Avatar>}
+                                            />
+                                            <CardContent className="CardContent" onClick={() => handleCardClick(buddies, index)}>
+                                                <Grid container spacing={0} justifyContent="center">
+                                                    <Grid item xs={12}>
+                                                        {buddies.firstName}
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        {latestMessages[buddies.email].seen == "false"
+                                                            ? <Typography style={{ color: "black", fontWeight: "990" }}>{latestMessages[buddies.email].body}</Typography>
+                                                            : <Typography style={{ color: "black" }}>{latestMessages[buddies.email].body}</Typography>}
+
+                                                    </Grid>
+                                                </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                        ))}
+                    </Scrollbars>
+                </div>
+            </div>
+            <div className="rightChat">
+                <div className="bottompane">
+                    {messageRecipient != null && messageRecipient != undefined
+                        ? <ChatHeader buddy={currentBuddy} buddyColor={messageRecipientColor} handleBuddyInfoButtonClick={handleBuddyInfoButtonClick}></ChatHeader>
+                        : <div></div>
+                    }
+
+                    {messageRecipient != null && messageRecipient != undefined
+                        ? <Chat data={messageRecipient} currentUserEmail={currentUser.email} handleCurrentMessage={handleCurrentMessage} />
+                        : <div></div>
+                    }
+
+                </div>
+                {buddyInfoClicked != false
+                    ? <BuddyInfoDrawer buddy={currentBuddy} buddyColor={messageRecipientColor} removeBuddy={removeBuddy}></BuddyInfoDrawer>
+                    : <div></div>
+                }
+            </div>
         </div>
-        // <div className="splitscreen">
-        //     <div className="leftList">
-        //         <div className="middlepane">
-        //             <Scrollbars>
-        //                 {myBuddies.map((buddies, index) => (
-        //                     <div>
-        //                         <Grid container spacing={0} justifyContent="center" >
-        //                             <Grid item xs={12}   >
-        //                                 <Card className={cardActive === index ? "cardActive" : "BuddyCard"}>
-        //                                     <CardHeader
-        //                                         avatar={<Avatar aria-label="recipe" style={{
-        //                                             color: 'white',
-        //                                             borderRadius: "100%",
-        //                                             border: "solid",
-        //                                             borderWidth: "0.0px", borderColor: "black",
-        //                                             backgroundColor: cardColor[index % cardColor.length]
-        //                                         }}>
-        //                                             {buddies.firstName[0]}
-        //                                         </Avatar>}
-        //                                     />
-        //                                     <CardContent className="CardContent" onClick={() => handleCardClick(buddies, index)}>
-        //                                         {buddies.firstName}
-        //                                     </CardContent>
-        //                                 </Card>
-        //                             </Grid>
-        //                         </Grid>
-        //                     </div>
-        //                 ))}
-        //             </Scrollbars>
-        //         </div>
-        //     </div>
-        //     <div className="rightChat">
-        //         <div className="bottompane">
-        //             {messageRecipient != null && messageRecipient != undefined
-        //                 ? <ChatHeader buddy={currentBuddy} buddyColor={messageRecipientColor} handleBuddyInfoButtonClick={handleBuddyInfoButtonClick}></ChatHeader>
-        //                 : <div></div>
-        //             }
-
-        //             {messageRecipient != null && messageRecipient != undefined
-        //                 ? <Chat data={messageRecipient} currentUserEmail={currentUser.email} />
-        //                 : <div></div>
-        //             }
-
-        //         </div>
-        //         {buddyInfoClicked != false
-        //             ? <BuddyInfoDrawer buddy={currentBuddy} buddyColor={messageRecipientColor} ></BuddyInfoDrawer>
-        //             : <div></div>
-        //         }
-        //     </div>
-        // </div>
 
     )
-
 }
 
-export default ViewBuddies

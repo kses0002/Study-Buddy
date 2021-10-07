@@ -115,3 +115,54 @@ export const deleteMessage = /* GraphQL */ `
     }
   }
 `;
+export const createLatestMessage = /* GraphQL */ `
+  mutation CreateLatestMessage(
+    $input: CreateLatestMessageInput!
+    $condition: ModelLatestMessageConditionInput
+  ) {
+    createLatestMessage(input: $input, condition: $condition) {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
+export const updateLatestMessage = /* GraphQL */ `
+  mutation UpdateLatestMessage(
+    $input: UpdateLatestMessageInput!
+    $condition: ModelLatestMessageConditionInput
+  ) {
+    updateLatestMessage(input: $input, condition: $condition) {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
+export const deleteLatestMessage = /* GraphQL */ `
+  mutation DeleteLatestMessage(
+    $input: DeleteLatestMessageInput!
+    $condition: ModelLatestMessageConditionInput
+  ) {
+    deleteLatestMessage(input: $input, condition: $condition) {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;

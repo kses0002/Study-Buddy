@@ -1,4 +1,4 @@
-import Amplify, { API, Auth } from 'aws-amplify'
+import { API, Auth } from 'aws-amplify'
 import React from 'react';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
@@ -108,8 +108,8 @@ class FriendRequest extends React.Component {
 
                 console.log("Buddy Accepted")
                 // this.state.currentUser.buddies=[]
-                // API.graphql({ query: mutations.updateStudent, variables: { input: acceptedBuddy } });
-                // API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
+                API.graphql({ query: mutations.updateStudent, variables: { input: acceptedBuddy } });
+                API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
             })
     }
 
@@ -151,7 +151,7 @@ class FriendRequest extends React.Component {
 
             }
         }
-        // API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
+        API.graphql({ query: mutations.updateStudent, variables: { input: this.state.currentUser } });
     }
 
     handleSnackBarClose() {
@@ -164,70 +164,79 @@ class FriendRequest extends React.Component {
     }
 
     render(props) {
-        return (
-            <div className="Main">
-                {this.state.potentialBuddies.map((buddies, index) => (
-                    <Grid container spacing={2} justifyContent="center">
-                        <Grid item xs={8}   >
-                            <Card className="BuddyRequestCards">
-                                <CardHeader
-                                    // className="cardHeader"
-                                    className={this.cardHeader[index % this.cardHeader.length]}
-                                    title={<Typography variant="h5" style={{ color: "black" }}>{buddies.firstName + ": " + buddies.degree}</Typography>}
-                                />
-                                <CardContent className="cardBody">
-                                    <Grid container spacing={2} justifyContent="center">
-                                        <Grid item xs={6}>
-                                            Units: {buddies.units.map((item) =>
-                                                <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
+        if (this.state.potentialBuddies != undefined && this.state.potentialBuddies.length != 0) {
+            return (
+                <div className="Main">
+                    {this.state.potentialBuddies.map((buddies, index) => (
+                        <Grid container spacing={2} justifyContent="center">
+                            <Grid item xs={8}   >
+                                <Card className="BuddyRequestCards">
+                                    <CardHeader
+                                        // className="cardHeader"
+                                        className={this.cardHeader[index % this.cardHeader.length]}
+                                        title={<Typography variant="h5" style={{ color: "black" }}>{buddies.firstName + ": " + buddies.degree}</Typography>}
+                                    />
+                                    <CardContent className="cardBody">
+                                        <Grid container spacing={2} justifyContent="center">
+                                            <Grid item xs={6}>
+                                                Units: {buddies.units.map((item) =>
+                                                    <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                Study Mode: {buddies.studyMode.map((item) =>
+                                                    <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                About Me: <Typography gutterbottom="true" variant="body2">{buddies.aboutMe}</Typography>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            Study Mode: {buddies.studyMode.map((item) =>
-                                                <Typography gutterbottom="true" variant="body2">{item}</Typography>)}
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            About Me: <Typography gutterbottom="true" variant="body2">{buddies.aboutMe}</Typography>
-                                        </Grid>
-                                    </Grid>
-                                </CardContent>
-                                <CardActions>
-                                    <Grid container spacing={0} justifyContent="flex-end">
-                                        <Grid item xs={1}>
-                                            <Button variant="contained" style={{
-                                                backgroundColor: "#0C1115",
-                                                color: 'white'
-                                            }} size="small" onClick={() => this.handleAcceptBuddy(buddies.email, this.state.potentialBuddies)}>Accept</Button>
-                                        </Grid>
-                                        <Grid item xs={1}>
-                                            <Button size="small" onClick={() => this.handleIgnoreBuddy(buddies)}
-                                                style={{
-                                                    backgroundColor: "#BE2F29",
+                                    </CardContent>
+                                    <CardActions>
+                                        <Grid container spacing={0} justifyContent="flex-end">
+                                            <Grid item xs={1}>
+                                                <Button variant="contained" style={{
+                                                    backgroundColor: "#0C1115",
                                                     color: 'white'
-                                                }}>Ignore</Button>
+                                                }} size="small" onClick={() => this.handleAcceptBuddy(buddies.email, this.state.potentialBuddies)}>Accept</Button>
+                                            </Grid>
+                                            <Grid item xs={1}>
+                                                <Button size="small" onClick={() => this.handleIgnoreBuddy(buddies)}
+                                                    style={{
+                                                        backgroundColor: "#BE2F29",
+                                                        color: 'white'
+                                                    }}>Ignore</Button>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                    {/* <IconButton
+                                        {/* <IconButton
                                         // onClick={() => this.handleExpandClick(card.email)}
                                         aria-expanded={this.state.expanded}
                                         aria-label="show more"
                                     >
                                         <ExpandMoreIcon />
                                     </IconButton> */}
-                                </CardActions>
-                            </Card>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                ))}
-                 {this.state.buddyAdded
-                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyAddedName={this.state.buddyAdded}></SnackBar>
-                    : <div></div>
-                } 
-                 {this.state.buddyIgnored
-                    ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyIgnoredName={this.state.buddyIgnored}></SnackBar>
-                    : <div></div>
-                } 
-            </div>
-        )
+                    ))}
+                    {this.state.buddyAdded
+                        ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyAddedName={this.state.buddyAdded}></SnackBar>
+                        : <div></div>
+                    }
+                    {this.state.buddyIgnored
+                        ? <SnackBar handleSnackBarClose={this.handleSnackBarClose} buddyIgnoredName={this.state.buddyIgnored}></SnackBar>
+                        : <div></div>
+                    }
+                </div>
+            )
+        }
+        else {
+            return (
+                <Grid container spacing={0} justifyContent="center" className="noBuddiesMessage">
+                    <Typography variant="h5"> You have no Buddy requests</Typography>
+                </Grid>
+            )
+        }
     }
 }
 

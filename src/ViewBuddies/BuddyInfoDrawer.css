@@ -1,8 +1,7 @@
 .buddy-info-card{
     width:20.5rem;
 
-    /* Height is the same as the root height in ViewBuddies.css*/
-    height: 48.5rem;
+    height: 50.5rem;
     overflow-y: scroll;
 }
 
@@ -11,7 +10,21 @@
     overflow-y: scroll;
 }
 
+.buddy-info-accordian{
+    width: 103%
+}
 
+.buddy-info-header:hover{
+    background-color: rgba(215, 215, 228, 0.432);
+}
+
+.delete-buddy-button{
+    padding-top: 12rem;
+    color: red;
+    background-color: red;
+    
+
+}
 /* .buddy-info-avatar{
     color: 'white';
     height:"6.5rem";

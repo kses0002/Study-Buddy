@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "studybuddy2ac15041_identitypool_2ac15041",
+    "identityPoolName": "studybuddy5ce80812_identitypool_5ce80812",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "studyb2ac15041",
-    "userPoolName": "studybuddy2ac15041_userpool_2ac15041",
+    "resourceNameTruncated": "studyb5ce80812",
+    "userPoolName": "studybuddy5ce80812_userpool_5ce80812",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "studyb2ac15041_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "studyb5ce80812_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "2ac15041",
-    "resourceName": "studybuddy2ac15041",
+    "sharedId": "5ce80812",
+    "resourceName": "studybuddy5ce80812",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,10 +45,14 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
-    "usernameAttributes": [
-        "email"
+    "useDefault": "defaultSocial",
+    "hostedUI": true,
+    "hostedUIDomainName": "studybuddy5ce80812-5ce80812",
+    "authProvidersUserPool": [
+        "Google"
     ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

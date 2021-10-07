@@ -1,0 +1,19 @@
+.searchBar{
+    margin-top: 0.5rem;
+    width:30%;
+    height:2.3rem;
+    margin-left: 1rem;
+    margin-bottom: 2rem;
+    position: flex;
+}
+
+.searchButton{
+    width: 20%;
+    margin-left: 30rem;
+    margin-bottom: 4rem;
+    /* padding-left: 3rem; */
+}
+
+.buddy-search-paper{
+    
+}

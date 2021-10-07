@@ -79,6 +79,41 @@ export const listMessages = /* GraphQL */ `
     }
   }
 `;
+export const getLatestMessage = /* GraphQL */ `
+  query GetLatestMessage($id: ID!) {
+    getLatestMessage(id: $id) {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
+export const listLatestMessages = /* GraphQL */ `
+  query ListLatestMessages(
+    $filter: ModelLatestMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLatestMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        author
+        recepient
+        body
+        buddyPair
+        createdAt
+        updatedAt
+        seen
+      }
+      nextToken
+    }
+  }
+`;
 export const studentByEmail = /* GraphQL */ `
   query StudentByEmail(
     $email: String
@@ -138,6 +173,35 @@ export const messageByBuddyPair = /* GraphQL */ `
         buddyPair
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const latestMessageByBuddyPair = /* GraphQL */ `
+  query LatestMessageByBuddyPair(
+    $recepient: String
+    $sortDirection: ModelSortDirection
+    $filter: ModelLatestMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    latestMessageByBuddyPair(
+      recepient: $recepient
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        author
+        recepient
+        body
+        buddyPair
+        createdAt
+        updatedAt
+        seen
       }
       nextToken
     }

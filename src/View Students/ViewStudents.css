@@ -15,33 +15,34 @@
     background-color: white;
 }
 
-.searchBar{
-    margin-top: 2rem;
-    width:30%;
-    height:2.3rem;
-}
+
 
 .cardHeader{
     background-color: #1A2C42;
     color: white;
+    height:7.7rem;
     
 }
 
 .cardHeader1{
     background-color: #00ABE1;
     color: white;
+    height:7.7rem;
+    height:7.7rem;
     
 }
 
 .cardHeader2{
     background-color:#E5B9A8;
     color: white;
+    height:7.7rem;
     
 }
 
 .cardHeader3{
     background-color: #9CF6FB;
     color: white;
+    height:7.7rem;
     
 }
 
@@ -49,24 +50,28 @@
     background-color: #1FC58E;
     /* background-color: blue; */
     color: white;
+    height:7.7rem;
     
 }
 
 .cardHeader5{
     background-color: #F8DD2E;
     color: white;
+    height:7.7rem;
     
 }
 
 .cardHeader6{
     background-color: #FAB162;
     color: white;
+    height:7.7rem;
     
 }
 
 .cardHeader7{
     background-color: #FF6495;
     color: white;
+    height:7.7rem;
     
 }
 
@@ -83,3 +88,6 @@
 }
 
 
+.noBuddiesMessage{
+    margin-top: 4rem;
+}

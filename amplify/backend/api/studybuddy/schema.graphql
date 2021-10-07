@@ -24,3 +24,15 @@ type Message @model @searchable
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
+
+type LatestMessage @model
+@key(name: "latestMessageBuddyPair", fields: ["recepient"], queryField: "latestMessageByBuddyPair"){
+  id: ID!
+  author: String!
+  recepient: String!
+  body: String
+  buddyPair: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  seen: String
+}

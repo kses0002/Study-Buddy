@@ -4,11 +4,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 export default function Checkboxes({ data, onChildClick }) {
      if (data!=null ) {
+        //  console.log(data.includes("On-Campus"))
         return (
             <div>
                 <FormControlLabel
                     control={
                         <Checkbox
+                            // defaultChecked={false}
                             defaultChecked={data.includes("On-Campus")}
                             color="primary"
                             inputProps={{ 'aria-label': 'secondary checkbox' }}

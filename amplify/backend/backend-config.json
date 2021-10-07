@@ -1,6 +1,6 @@
 {
   "auth": {
-    "studybuddy2ac15041": {
+    "studybuddy5ce80812": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

@@ -10,17 +10,17 @@ import Avatar from '@material-ui/core/Avatar';
 import './ChatHeader.css'
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-
-
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 function ChatHeader({ buddy, buddyColor, handleBuddyInfoButtonClick }) {
 
     const [BuddyInfoButton, setBuddyInfoButton] = useState(false)
-    // console.log(handleBuddyInfoButtonClick)
+
 
     const showBuddyInfo = (buddyInfoButtonValue) => {
+        console.log(buddyInfoButtonValue)
         setBuddyInfoButton(buddyInfoButtonValue)
-        // console.log(handleBuddyInfoButtonClick)
         handleBuddyInfoButtonClick(buddyInfoButtonValue)
     }
 
@@ -47,7 +47,10 @@ function ChatHeader({ buddy, buddyColor, handleBuddyInfoButtonClick }) {
                     <Grid item xs={1}>
                         <CardActions className="chat-action-content">
                             <IconButton color="primary" onClick={() => showBuddyInfo(!BuddyInfoButton)}>
-                                <InfoIcon></InfoIcon>
+                                {BuddyInfoButton ?
+                                    <ArrowForwardIosIcon></ArrowForwardIosIcon> :
+                                    <InfoIcon></InfoIcon>
+                                }
                             </IconButton>
                             {/* <Button size="small" onClick={() => showBuddyInfo(!BuddyInfoButton)}>
                                 <Typography variant="h4" style={{ color: "black" }}>...</Typography>

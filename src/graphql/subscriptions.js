@@ -97,3 +97,45 @@ export const onDeleteMessage = /* GraphQL */ `
     }
   }
 `;
+export const onCreateLatestMessage = /* GraphQL */ `
+  subscription OnCreateLatestMessage {
+    onCreateLatestMessage {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
+export const onUpdateLatestMessage = /* GraphQL */ `
+  subscription OnUpdateLatestMessage {
+    onUpdateLatestMessage {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
+export const onDeleteLatestMessage = /* GraphQL */ `
+  subscription OnDeleteLatestMessage {
+    onDeleteLatestMessage {
+      id
+      author
+      recepient
+      body
+      buddyPair
+      createdAt
+      updatedAt
+      seen
+    }
+  }
+`;
